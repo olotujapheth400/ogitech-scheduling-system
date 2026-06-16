@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>OGITECH Admin Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #111; color: #fff; }
+        .main-wrapper { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .container { flex: 3; background: #222; padding: 25px; border-radius: 8px; border: 1px solid #333; height: fit-content; }
+        .sidebar { flex: 1; background: #2c3e50; padding: 20px; border-radius: 8px; border: 1px solid #34495e; height: fit-content; display: flex; flex-direction: column; gap: 20px; min-height: 400px; }
+        h2 { color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 10px; text-align: center; margin-top:0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 30px; }
+        th, td { border: 1px solid #444; padding: 12px; text-align: left; }
+        th { background-color: #333; color: #3498db; }
+        tr:nth-child(even) { background-color: #1a1a1a; }
+        .btn-algo { padding: 10px 15px; background: #e67e22; border: none; color: white; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .select-algo { padding: 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 4px; width: 100%; margin-top: 5px; }
+        .badge-vip { background: #9b59b6; color: white; padding: 2px 5px; border-radius: 4px; font-size: 11px; }
+        .badge-std { background: #7f8c8d; color: white; padding: 2px 5px; border-radius: 4px; font-size: 11px; }
+        h3 { color: #5dade2; margin-top: 0; border-left: 4px solid #5dade2; padding-left: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .logout-btn { padding: 12px 15px; background: #e74c3c; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; text-align: center; font-size: 14px; transition: background 0.2s; border: 1px solid #c0392b; margin-top: auto; }
+        .logout-btn:hover { background: #c0392b; }
+        .stat-count-badge { background: #34495e; color: #fff; font-size: 12px; padding: 3px 8px; border-radius: 20px; font-weight: bold; }
+        .orange-badge { background: #d35400; }
+        .green-badge { background: #27ae60; }
+        .view-all-link { color: #3498db; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .view-all-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <div class="container">
+        <h2>📊 OGITECH Restaurant - Executive Administration Controls</h2>
+        
+        <div style="background: #1a1a1a; padding: 15px; border-radius: 6px; margin-bottom: 25px; border: 1px dashed #3498db;">
+            <h3 style="font-size:15px; color:#e67e22; border-left-color:#e67e22; margin-bottom:10px;">⚙ Toggle Core Scheduling Logic Algorithm</h3>
+            <form action="/change-algo" method="POST" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label>Select Algorithm Framework Model:</label>
+                    <select name="algorithm" class="select-algo">
+                        <option value="sjf" <%= locals.algo === 'sjf' ? 'selected' : '' %>>Shortest Job First (SJF Mode)</option>
+                        <option value="fifo" <%= locals.algo === 'fifo' ? 'selected' : '' %>>First-In, First-Out (FIFO Mode)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-algo" style="margin-top: 22px;">Enforce Logic Re-Sort</button>
+            </form>
+        </div>
+
+        <h3>
+            <span>🍳 Active Kitchen Workload Queue</span>
+            <span class="stat-count-badge orange-badge"><%= locals.jobs ? jobs.length : 0 %> Pending Orders</span>
+        </h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sequence Rank</th>
+                    <th>Order ID</th>
+                    <th>Inbound Time</th>
+                    <th>Customer Name</th>
+                    <th>Food Item & Volume Requested</th>
+                    <th>Processing Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (!locals.jobs || jobs.length === 0) { %>
+                    <tr><td colspan="6" style="text-align:center; color: #777; padding: 15px;">No active dishes are cooking in the kitchen right now.</td></tr>
+                <% } else { %>
+                    <% jobs.forEach((job, index) => { %>
+                        <tr>
+                            <td><b>#<%= index + 1 %></b></td>
+                            <td><code style="color:#f1c40f;"><%= job.orderId || 'N/A' %></code></td>
+                            <td style="color:#777;"><%= formatTime(job.createdAt) %></td>
+                            <td><%= job.customerName || 'Anonymous' %> <span class="<%= job.priority === 1 ? 'badge-vip' : 'badge-std' %>"><%= job.priority === 1 ? 'VIP' : 'STD' %></span></td>
+                            <td>
+                                <%= job.quantity || 1 %>x <%= job.foodName || 'Food Item' %>
+                                <br>
+                                <small style="color: #2ecc71; font-weight: bold; font-size: 0.85rem;">
+                                    ₦<%= (job.totalPrice || 0).toLocaleString() %>
+                                </small>
+                            </td>
+                            <td><%= (job.processingTime || 0) * (job.quantity || 1) %> mins</td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+            </tbody>
+        </table>
+
+        <h3>
+            <span>⏳ Counter Pickup Desk (Awaiting Collection Overview)</span>
+            <span class="stat-count-badge orange-badge"><%= locals.pendingPickup ? pendingPickup.length : 0 %> Pending Pickup</span>
+        </h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Verification ID</th>
+                    <th>Ready Since</th>
+                    <th>Customer Name</th>
+                    <th>Food Item Details</th>
+                    <th>Total Revenue Due</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (locals.pendingPickup && pendingPickup.length > 0) { %>
+                    <% pendingPickup.forEach(job => { %>
+                        <tr style="background-color: #1a251f;">
+                            <td><code style="color:#2ecc71; font-size:14px; font-weight:bold;"><%= job.orderId %></code></td>
+                            <td style="color:#888;"><%= formatTime(job.updatedAt) %></td>
+                            <td><%= job.customerName %></td>
+                            <td><%= job.quantity || 1 %>x <%= job.foodName %></td>
+                            <td style="color: #2ecc71; font-weight: bold;">₦<%= (job.totalPrice || 0).toLocaleString() %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align:center; color: #777; padding: 20px;">No processed meals are currently waiting at the dispatch desk.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <h3>
+            <span>📜 Settled Transaction Ledgers (Historical Sales Archive)</span>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <a href="/admin/archive" class="view-all-link">🔎 View Full Audit Logs</a>
+                <span class="stat-count-badge green-badge"><%= locals.completedCount || 0 %> Finalized</span>
+            </div>
+        </h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Verification Token</th>
+                    <th>Dispatched At</th>
+                    <th>Customer Name</th>
+                    <th>Dispatched Foods</th>
+                    <th>Revenue Extracted</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (!locals.history || history.length === 0) { %>
+                    <tr><td colspan="5" style="text-align:center; color: #666; padding: 15px;">No business transactions archived for today yet.</td></tr>
+                <% } else { %>
+                    <% history.forEach(order => { %>
+                        <tr style="background: #161616; color:#aaa;">
+                            <td><code style="color:#2ecc71;"><%= order.orderId %></code></td>
+                            <td style="color: #666; font-size:13px;"><%= formatTime(order.updatedAt) %></td>
+                            <td><%= order.customerName %></td>
+                            <td><%= order.quantity || 1 %>x <%= order.foodName %></td>
+                            <td style="color:#2ecc71; font-weight:bold;">₦<%= (order.totalPrice || 0).toLocaleString() %></td>
+                        </tr>
+                    <% }) %>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="sidebar">
+        <div style="background: #1a252f; padding: 15px; border-radius: 6px; border: 1px solid #3498db;">
+            <h3 style="color:#5dade2; border:none; padding:0; margin-bottom:5px;">📊 Financial Statistics</h3>
+            <p style="font-size:13px; color:#bdc3c7; margin-bottom:2px;">Gross Store Income:</p>
+            <p style="font-size: 26px; font-weight: bold; color: #2ecc71; margin-top:0; margin-bottom: 15px;">₦<%= locals.revenue ? revenue.toLocaleString() : '0' %></p>
+            
+            <p style="font-size:13px; color:#bdc3c7; margin-bottom:2px;">Dispatched Ticket Volume:</p>
+            <p style="font-size: 22px; font-weight: bold; color: #3498db; margin-top:0; margin-bottom:0;"><%= locals.completedCount || 0 %> Plates Served</p>
+        </div>
+        
+        <a href="/admin-logout" class="logout-btn">🔒 Secure Logout</a>
+    </div>
+</div>
+
+</body>
+</html>

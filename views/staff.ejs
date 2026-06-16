@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OpenITEC Kitchen Monitor</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #111; color: #fff; }
+        .main-wrapper { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .container { flex: 3; background: #222; padding: 25px; border-radius: 8px; border: 1px solid #333; height: fit-content; }
+        .sidebar { flex: 1; background: #1c2833; padding: 20px; border-radius: 8px; border: 1px solid #34495e; height: fit-content; display: flex; flex-direction: column; gap: 20px; min-height: 350px; }
+        h2 { color: #e67e22; border-bottom: 2px solid #e67e22; padding-bottom: 10px; text-align: center; margin-top:0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 30px; }
+        th, td { border: 1px solid #444; padding: 12px; text-align: left; }
+        th { background-color: #333; color: #e67e22; }
+        tr:nth-child(even) { background-color: #1a1a1a; }
+        .btn-done { background: #e67e22; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-pay { background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
+        .badge-vip { background: #9b59b6; color: white; padding: 3px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; }
+        h3 { color: #5dade2; margin-top: 0; border-left: 4px solid #5dade2; padding-left: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .vip-row { border-left: 4px solid #9b59b6; background-color: #24142c !important; }
+        .counter-search-panel { background: #1a252f; border: 2px dashed #3498db; padding: 15px; border-radius: 6px; margin-bottom: 25px; }
+        .search-input { padding: 10px; font-size: 14px; border-radius: 4px; background: #222; color: #fff; width: 60%; }
+        .search-btn { padding: 10px 20px; background: #3498db; border: none; color: white; font-weight: bold; cursor: pointer; }
+        .verification-result-box { background: #1d3828; border-left: 5px solid #2ecc71; padding: 15px; margin-top: 15px; }
+        .logout-btn { padding: 12px 15px; background: #e74c3c; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; text-align: center; font-size: 14px; transition: background 0.2s; border: 1px solid #c0392b; margin-top: auto; }
+        .logout-btn:hover { background: #c0392b; }
+        .stat-count-badge { background: #34495e; color: #fff; font-size: 12px; padding: 3px 8px; border-radius: 20px; font-weight: bold; }
+        .orange-badge { background: #d35400; }
+        .green-badge { background: #27ae60; }
+        .revenue-box { background: #111; padding: 15px; border-radius: 6px; border: 1px solid #27ae60; }
+        .view-all-link { color: #3498db; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .view-all-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <div class="container">
+        <h2>🍳 OGITECH Kitchen Cook Monitor</h2>
+        <p style="text-align: center; color: #aaa; margin-bottom: 20px;">
+            Live Operating Framework Matrix: 
+            <span style="color:#e67e22; font-weight:bold; text-transform: uppercase;">
+                <%= algo === 'sjf' ? 'Shortest Job First (SJF Mode)' : 'First-In, First-Out (FIFO Mode)' %> Active
+            </span>
+        </p>
+
+        <div class="counter-search-panel">
+            <h3>💵 Counter Cash Despatch Verification Tool</h3>
+            <form action="/staff" method="GET" style="display:flex; gap:10px;">
+                <input type="text" name="counterSearchId" placeholder="e.g. OGI-W3A4" class="search-input" value="<%= locals.counterSearchQuery || '' %>" required>
+                <button type="submit" class="search-btn">Verify Receipt Token</button>
+            </form>
+
+            <% if (locals.matchedCounterOrder) { %>
+                <div class="verification-result-box">
+                    <span style="color:#2ecc71; font-weight:bold;">✔ MATCH FOUND FOR TICKET [<%= matchedCounterOrder.orderId %>]</span>
+                    <p style="line-height: 1.6; margin-top: 10px;">
+                        <b>Customer Name:</b> <%= matchedCounterOrder.customerName %><br>
+                        <b>Assigned Meal Plate:</b> <span style="color:#f1c40f; font-weight:bold;"><%= matchedCounterOrder.quantity || 1 %>x <%= matchedCounterOrder.foodName %></span><br>
+                        <b>Total Due:</b> ₦<%= (matchedCounterOrder.totalPrice || 0).toLocaleString() %>
+                    </p>
+                    <form action="/pickup-job/<%= matchedCounterOrder._id %>" method="POST">
+                        <button type="submit" class="btn-pay">💵 Confirm Cash & Despatch Meal Plate</button>
+                    </form>
+                </div>
+            <% } else if (locals.counterSearchQuery && locals.counterSearchError) { %>
+                <div class="verification-result-box" style="background:#441a1a; border-left-color:#e74c3c; color:#ff9999;">
+                    ❌ No pending order found for verification code "<%= locals.counterSearchQuery %>".
+                </div>
+            <% } %>
+        </div>
+
+        <h3>
+            <span>Active Kitchen Queue</span>
+            <span class="stat-count-badge orange-badge"><%= locals.jobs ? jobs.length : 0 %> Incoming Orders</span>
+        </h3>
+        <table>
+            <thead>
+                <tr><th>Rank</th><th>Order ID</th><th>Inbound Time</th><th>Customer Name</th><th>Food Item</th><th>Est Time</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                <% if (locals.jobs && jobs.length > 0) { %>
+                    <% jobs.forEach((job, index) => { %>
+                        <tr class="<%= job.priority === 1 ? 'vip-row' : '' %>">
+                            <td><b>#<%= index + 1 %></b></td>
+                            <td><code><%= job.orderId %></code></td>
+                            <td style="color:#888;"><%= formatTime(job.createdAt) %></td>
+                            <td><%= job.customerName %> <% if (job.priority === 1) { %><span class="badge-vip">VIP</span><% } %></td>
+                            <td>
+                                <%= job.quantity || 1 %>x <%= job.foodName %>
+                                <br>
+                                <small style="color: #2ecc71; font-weight: bold; font-size: 0.85rem;">
+                                    ₦<%= (job.totalPrice || 0).toLocaleString() %>
+                                </small>
+                            </td>
+                            <td><%= (job.processingTime || 0) * (job.quantity || 1) %> mins</td>
+                            <td>
+                                <form action="/complete-job/<%= job._id %>" method="POST" style="margin:0;">
+                                    <button type="submit" class="btn-done">Send to Counter</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="7" style="text-align:center; color: #777; padding: 15px;">No active dishes are cooking in the kitchen right now.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <h3>
+            <span>⏳ Counter Pickup Desk (Overview of Awaiting Collections)</span>
+            <span class="stat-count-badge orange-badge"><%= locals.pendingPickup ? pendingPickup.length : 0 %> Pending Pickup</span>
+        </h3>
+        <table>
+            <thead>
+                <tr><th>Verification ID</th><th>Ready Since</th><th>Customer Name</th><th>Food Item</th><th>Total Cash Due</th></tr>
+            </thead>
+            <tbody>
+                <% if (locals.pendingPickup && pendingPickup.length > 0) { %>
+                    <% pendingPickup.forEach(job => { %>
+                        <tr style="background-color: #1a251f;">
+                            <td><code><%= job.orderId %></code></td>
+                            <td style="color: #888;"><%= formatTime(job.updatedAt) %></td>
+                            <td><%= job.customerName %></td>
+                            <td><%= job.quantity || 1 %>x <%= job.foodName %></td>
+                            <td style="color: #2ecc71; font-weight: bold;">₦<%= (job.totalPrice || 0).toLocaleString() %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align:center; color: #777; padding: 15px;">No meals waiting at counter.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <h3>
+            <span>📜 Settled Archive (Showing Last 10)</span>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <a href="/staff/archive" class="view-all-link">🔎 View Full Ledgers</a>
+                <span class="stat-count-badge green-badge"><%= locals.completedCount || 0 %> Dispatched Total</span>
+            </div>
+        </h3>
+        <table>
+            <thead>
+                <tr><th>Order ID</th><th>Dispatched At</th><th>Customer Name</th><th>Meal Dispatched</th><th>Amount Paid</th></tr>
+            </thead>
+            <tbody>
+                <% if (locals.history && history.length > 0) { %>
+                    <% history.forEach(order => { %>
+                        <tr style="background: #161616; color:#aaa;">
+                            <td><code style="color:#2ecc71;"><%= order.orderId %></code></td>
+                            <td style="color: #666; font-size:13px;"><%= formatTime(order.updatedAt) %></td>
+                            <td><%= order.customerName %></td>
+                            <td><%= order.quantity || 1 %>x <%= order.foodName %></td>
+                            <td style="color:#2ecc71; font-weight:bold;">₦<%= (order.totalPrice || 0).toLocaleString() %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align:center; color: #666; padding: 15px;">No business transactions finalized yet.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="sidebar">
+        <div class="revenue-box">
+            <h3 style="color:#2ecc71; border:none; padding:0; margin-bottom:5px;">💰 Sales Revenue</h3>
+            <p style="font-size:26px; font-weight:bold; color:#2ecc71; margin:0;">₦<%= locals.revenue ? revenue.toLocaleString() : '0' %></p>
+        </div>
+        
+        <a href="/staff-logout" class="logout-btn">🔒 Lock Station Log Out</a>
+    </div>
+</div>
+</body>
+</html>
