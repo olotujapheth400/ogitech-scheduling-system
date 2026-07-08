@@ -367,8 +367,17 @@ app.post('/change-algo', isAdmin, (req, res) => {
 });
 
 // =========================================================================
-// MATCHING ARCHIVE VIEW ROUTES FOR EXISTING EJS LINKS
+// FIXED ARCHIVE, LEDGER, & AUDIT VIEW ROUTES FOR EXISTING DASHBOARD LINKS
 // =========================================================================
+
+app.get('/staff/ledger', isStaff, async (req, res) => {
+    try {
+        const fullServedHistory = await Order.find({ status: 'Collected' }).sort({ updatedAt: -1 });
+        res.render('archive-view', { history: fullServedHistory });
+    } catch (err) { 
+        res.status(500).send("Ledger Full History View Render Error"); 
+    }
+});
 
 app.get('/staff/archive', isStaff, async (req, res) => {
     try {
@@ -376,6 +385,15 @@ app.get('/staff/archive', isStaff, async (req, res) => {
         res.render('archive-view', { history: fullServedHistory });
     } catch (err) { 
         res.status(500).send("Ledger Archive View Render Error"); 
+    }
+});
+
+app.get('/admin/audit-logs', isAdmin, async (req, res) => {
+    try {
+        const fullAuditLogs = await Order.find({}).sort({ createdAt: -1 });
+        res.render('archive-view', { history: fullAuditLogs });
+    } catch (err) { 
+        res.status(500).send("Admin Full Audit Logs Render Error"); 
     }
 });
 
