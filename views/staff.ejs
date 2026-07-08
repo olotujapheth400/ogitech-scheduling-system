@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>OpenITEC Kitchen Monitor</title>
+    <title>OGITECH Kitchen Monitor</title>
+    
+    <!-- Premium Unified Browser Tab Favicon Icon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233498db'%3E%3Cpath d='M11 2v20H9v-2H7v-2H5v-2H3v-2H1v-2h22v2h-2v2h-2v2h-2v2h-2V2h-2zm2 5h4v2h-4zm0 4h4v2h-4zm-8 4h14v2H5zm0 4h14v2H5z'/%3E%3Cpolygon points='12,2 10,5 14,5' fill='%23d4af37'/%3E%3C/svg%3E">
+    
     <style>
         body { font-family: Arial, sans-serif; margin: 30px; background-color: #111; color: #fff; }
         .main-wrapper { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
@@ -170,5 +174,14 @@
         <a href="/staff-logout" class="logout-btn">🔒 Lock Station Log Out</a>
     </div>
 </div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+    socket.on('queueUpdate', (data) => {
+        console.log("System update received:", data.message);
+        window.location.reload();
+    });
+</script>
 </body>
 </html>
