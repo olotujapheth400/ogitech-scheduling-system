@@ -373,7 +373,7 @@ app.post('/change-algo', isAdmin, (req, res) => {
 app.get('/staff/ledger', isStaff, async (req, res) => {
     try {
         const fullServedHistory = await Order.find({ status: 'Collected' }).sort({ updatedAt: -1 });
-        res.render('archive-view', { history: fullServedHistory });
+        res.render('archive-view', { history: fullServedHistory, role: 'staff' });
     } catch (err) { 
         res.status(500).send("Ledger Full History View Render Error"); 
     }
@@ -382,7 +382,7 @@ app.get('/staff/ledger', isStaff, async (req, res) => {
 app.get('/staff/archive', isStaff, async (req, res) => {
     try {
         const fullServedHistory = await Order.find({ status: 'Collected' }).sort({ updatedAt: -1 });
-        res.render('archive-view', { history: fullServedHistory });
+        res.render('archive-view', { history: fullServedHistory, role: 'staff' });
     } catch (err) { 
         res.status(500).send("Ledger Archive View Render Error"); 
     }
@@ -391,7 +391,7 @@ app.get('/staff/archive', isStaff, async (req, res) => {
 app.get('/admin/audit-logs', isAdmin, async (req, res) => {
     try {
         const fullAuditLogs = await Order.find({}).sort({ createdAt: -1 });
-        res.render('archive-view', { history: fullAuditLogs });
+        res.render('archive-view', { history: fullAuditLogs, role: 'admin' });
     } catch (err) { 
         res.status(500).send("Admin Full Audit Logs Render Error"); 
     }
@@ -400,7 +400,7 @@ app.get('/admin/audit-logs', isAdmin, async (req, res) => {
 app.get('/admin/archive', isAdmin, async (req, res) => {
     try {
         const fullServedHistory = await Order.find({ status: 'Collected' }).sort({ updatedAt: -1 });
-        res.render('archive-view', { history: fullServedHistory });
+        res.render('archive-view', { history: fullServedHistory, role: 'admin' });
     } catch (err) { 
         res.status(500).send("Administrative Audit Logs Render Error"); 
     }
