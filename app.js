@@ -108,7 +108,6 @@ const scheduler = {
     }
 };
 
-// HELPER ASSIGNMENT ENGINE - LURKS MATRIX TIMES TO 10 MINUTES ABSOLUTE CEILING
 function decorateWithQueueMetrics(targetTicket, orderedQueue) {
     if (!targetTicket) return null;
     
@@ -122,7 +121,7 @@ function decorateWithQueueMetrics(targetTicket, orderedQueue) {
     if (rankPosition === -1) rankPosition = orderedQueue.length + 1;
 
     const readyAtTime = new Date();
-    readyAtTime.setMinutes(readyAtTime.getMinutes() + 10); // Capped premium calculation logic anchor
+    readyAtTime.setMinutes(readyAtTime.getMinutes() + 10); 
     
     const formattedClockTime = readyAtTime.toLocaleTimeString('en-US', {
         hour: '2-digit', minute: '2-digit', hour12: true
@@ -133,7 +132,7 @@ function decorateWithQueueMetrics(targetTicket, orderedQueue) {
     return {
         ...cleanTicket,
         queuePosition: rankPosition,
-        totalWaitTime: 10, // Enforce Maximum Limit explicitly
+        totalWaitTime: 10, 
         estimatedTime: formattedClockTime,
         engineMode: currentAlgorithm.toUpperCase()
     };
@@ -201,7 +200,7 @@ app.post('/place-order', async (req, res) => {
             customerName: customerName,
             customerEmail: customerEmail,
             foodName: selectedMeal.name,
-            processingTime: 10, // Ensure individual DB items adhere to max timing boundaries
+            processingTime: 10, 
             price: selectedMeal.price,
             quantity: qty,
             totalPrice: calculatedPrice, 
@@ -366,6 +365,32 @@ app.post('/change-algo', isAdmin, (req, res) => {
     }
     res.redirect('/admin');
 });
+
+/* ==========================================================================
+   NEW ADDITIONS: FULL LEDGER & AUDIT LOG ROUTING SYSTEM
+   ========================================================================== */
+
+// 1. Staff View Full Ledger Route
+app.get('/staff/ledger', isStaff, async (req, res) => {
+    try {
+        const fullLedger = await Order.find({ status: 'Collected' }).sort({ updatedAt: -1 });
+        res.render('staff-ledger', { history: fullLedger });
+    } catch (err) {
+        res.status(500).send("Staff Ledger Database Fetch Error");
+    }
+});
+
+// 2. Admin View Full Audit Logs Route
+app.get('/admin/audit-logs', isAdmin, async (req, res) => {
+    try {
+        const fullAuditLogs = await Order.find({}).sort({ createdAt: -1 });
+        res.render('admin-audit', { logs: fullAuditLogs });
+    } catch (err) {
+        res.status(500).send("Admin Audit Log Database Fetch Error");
+    }
+});
+
+/* ========================================================================== */
 
 io.on('connection', (socket) => {
     console.log("WEBSOCKET STREAM TUNNEL SYNCED.");
