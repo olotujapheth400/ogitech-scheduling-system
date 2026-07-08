@@ -19,7 +19,7 @@
             --bg-master: #0a0a0c;
             --bg-surface: #141419;
             --bg-surface-elevated: #1d1d26;
-            --accent-primary: #E63946; /* Matching index crimson */
+            --accent-primary: #E63946; 
             --accent-hover: #d62828;
             --accent-gold: #d4af37;
             --text-main: #f3f4f6;
@@ -40,7 +40,6 @@
             overflow-x: hidden;
         }
 
-        /* UPGRADED BRANDED TITLE HEADER PANEL */
         .academic-terminal-header {
             background: var(--bg-surface);
             padding: 55px 20px 40px 20px;
@@ -77,16 +76,69 @@
             line-height: 1.6;
         }
 
-        /* INTERACTIVE SYSTEM DASHBOARD CONTAINER */
+        /* PREMIUM DYNAMIC CIRCULAR TOP BADGES BAR */
+        .badge-nav-panel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: -25px auto 25px auto;
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+        .badge-circle-pill {
+            background: #1c1c24;
+            border: 2px solid var(--border-glow);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .badge-circle-pill:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(230, 57, 70, 0.25);
+        }
+        .badge-circle-pill.active-badge {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4);
+        }
+
+        /* COLLAPSIBLE VISIBILITY WRAPPERS */
+        .collapsible-view-block {
+            display: none;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glow);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-premium);
+            animation: fadeInDown 0.35s ease;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .interactive-terminal {
             max-width: 1300px;
             margin: 0 auto;
-            padding: 40px 30px;
+            padding: 20px 30px 40px 30px;
         }
 
         .row { display: flex; gap: 30px; flex-wrap: wrap; }
-        .col-main { flex: 1.8; min-width: 350px; background: var(--bg-surface); padding: 35px; border-radius: 16px; border: 1px solid var(--border-glow); height: fit-content; box-shadow: var(--shadow-premium); }
-        .col-side { flex: 1.2; min-width: 300px; display: flex; flex-direction: column; gap: 25px; }
+        .col-main { flex: 1; min-width: 350px; background: var(--bg-surface); padding: 35px; border-radius: 16px; border: 1px solid var(--border-glow); height: fit-content; box-shadow: var(--shadow-premium); }
         
         h3 { border-left: 4px solid #3498db; padding-left: 12px; color: #3498db; margin-top: 0; margin-bottom: 25px; font-weight: 600; font-size: 1.2rem; letter-spacing: 0.5px; }
         label { font-weight: 500; display: block; margin-top: 20px; color: #bdc3c7; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -94,7 +146,6 @@
         input, select, button { padding: 14px; margin: 8px 0; width: 100%; box-sizing: border-box; border: 1px solid var(--border-glow); border-radius: 8px; font-size: 14px; background: var(--bg-master); color: #fff; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
         input:focus, select:focus { border-color: var(--accent-primary); outline: none; background-color: var(--bg-surface-elevated); }
         
-        /* Premium Action Button Customization */
         button[type="submit"].order-dispatch-btn { 
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover)); 
             color: white; 
@@ -106,67 +157,50 @@
             letter-spacing: 1px;
             box-shadow: 0 4px 12px rgba(230, 57, 70, 0.2);
         }
-        button[type="submit"].order-dispatch-btn:hover { 
-            transform: translateY(-1px);
-        }
 
-        /* REAL-TIME GATEWAY LOADING INTERCEPTOR SYSTEM OVERLAYS */
-        .payment-loading-active {
-            pointer-events: none;
-            opacity: 0.85;
-        }
-        .spinner-inline {
-            display: none;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spinAnimation 0.8s linear infinite;
-            vertical-align: middle;
-            margin-left: 10px;
-        }
-        @keyframes spinAnimation { to { transform: rotate(360deg); } }
-
-        /* Thermal Receipt Simulation Design */
         .receipt-wrapper { background: #fff; border: 1px solid #999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); padding: 22px; width: 100%; max-width: 300px; margin: 0 auto 20px auto; font-family: 'Courier New', Courier, monospace; color: #000; text-align: center; border-radius: 4px; }
         .receipt-line { border-top: 1px dashed #000; margin: 14px 0; }
         .btn-print { background-color: #2c3e50; color: white; margin-bottom: 25px; width: 100%; max-width: 344px; display: block; margin-left: auto; margin-right: auto; font-weight: 500; }
-        .btn-print:hover { background-color: #34495e; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { border: 1px solid var(--border-glow); padding: 14px 12px; text-align: left; font-size: 13px; }
         th { background-color: var(--bg-master); color: var(--accent-primary); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
-        tr:nth-child(even) { background-color: rgba(255, 255, 255, 0.01); }
+        
         .badge-wait { background: #d35400; color: white; padding: 4px 10px; border-radius: 4px; font-weight: 600; font-size: 11px; text-transform: uppercase; }
         .badge-vip { background: #9b59b6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
         
-        .search-box { background: rgba(155, 89, 182, 0.04); border: 1px dashed #9b59b6; padding: 25px; border-radius: 12px; }
-        .status-box { background: #1d3828; color: #2ecc71; padding: 18px; border-radius: 8px; margin-top: 15px; border-left: 5px solid #2ecc71; line-height: 1.6; font-size: 13.5px; }
+        .search-box { background: rgba(155, 89, 182, 0.02); border: 1px dashed #9b59b6; padding: 10px 0 0 0; border-radius: 0; }
+        .status-box { background: #1d3828; color: #2ecc71; padding: 18px; border-radius: 8px; margin-top: 15px; border-left: 5px solid #2ecc71; line-height: 1.6; font-size: 13.5px; text-align: left; }
         
-        .hours-badge { background: var(--bg-surface); border: 1px solid var(--border-glow); border-left: 5px solid var(--accent-primary); padding: 20px; border-radius: 12px; color: #bdc3c7; font-size: 14px; }
+        /* FOOTER POSITIONING OF SYSTEM INFO AND OPTIMIZED BUTTON */
+        .bottom-info-deck {
+            max-width: 1300px;
+            margin: 30px auto 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .hours-badge { background: var(--bg-surface); border: 1px solid var(--border-glow); border-left: 5px solid var(--accent-primary); padding: 15px 25px; border-radius: 12px; color: #bdc3c7; font-size: 13px; flex: 1; min-width: 280px; }
         
-        /* ALGORITHM BADGE INFOBAR */
-        .algo-infobar { background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3); padding: 14px 18px; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; border-left: 5px solid #3498db; }
-        .algo-title { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #3498db; margin: 0; }
-        
-        /* BOTTOM RIGHT FIXED SUPPORT BAR TRIGGER */
         .footer-interactive-trigger { 
             position: fixed; 
             bottom: 20px; 
-            right: 30px; 
+            right: 25px; 
             z-index: 1000;
         }
-        .footer-bot-btn { background: #a855f7; color: #fff; border: none; padding: 14px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4); transition: transform 0.2s ease, background 0.2s; width: auto; margin: 0; }
-        .footer-bot-btn:hover { transform: translateY(-3px); background: #c084fc; }
+        /* Optimized Small and Elegant Floating Help Trigger */
+        .footer-bot-btn { background: #a855f7; color: #fff; border: none; padding: 10px 18px; border-radius: 30px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35); transition: transform 0.2s ease, background 0.2s; width: auto; margin: 0; }
+        .footer-bot-btn:hover { transform: translateY(-2px); background: #c084fc; }
 
-        /* ADVANCED POPUP LIVE SUPPORT PANEL WIDGET */
         .live-chat-panel {
             position: fixed;
-            bottom: 90px;
-            right: 30px;
-            width: 360px;
-            height: 500px;
+            bottom: 75px;
+            right: 25px;
+            width: 340px;
+            height: 460px;
             background: #141419;
             border: 1px solid #2a2a35;
             border-radius: 16px;
@@ -175,18 +209,15 @@
             display: none; 
             flex-direction: column;
             overflow: hidden;
-            animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        .chat-header { background: #a855f7; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .chat-header h4 { margin: 0; font-size: 15px; font-weight: 700; color: #fff; }
+        .chat-header { background: #a855f7; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-header h4 { margin: 0; font-size: 14px; font-weight: 700; color: #fff; }
         .chat-close-btn { background: transparent; border: none; color: #fff; font-size: 20px; cursor: pointer; width: auto; padding: 0; margin: 0; }
         
-        .chat-channels-box { background: #1d1d26; padding: 15px; border-bottom: 1px solid #2a2a35; }
-        .chat-channels-box p { margin: 0 0 10px 0; font-size: 11px; font-weight: 600; text-transform: uppercase; color: #a1a1aa; letter-spacing: 0.5px; }
-        .channel-link { display: flex; align-items: center; gap: 10px; color: #38bdf8; text-decoration: none; font-size: 13px; margin-bottom: 8px; padding: 6px 10px; background: #141419; border-radius: 6px; border: 1px solid #2a2a35; }
-        .channel-link:hover { background: #2a2a35; color: #7dd3fc; }
+        .chat-channels-box { background: #1d1d26; padding: 12px; border-bottom: 1px solid #2a2a35; }
+        .chat-channels-box p { margin: 0 0 8px 0; font-size: 10px; font-weight: 600; text-transform: uppercase; color: #a1a1aa; letter-spacing: 0.5px; }
+        .channel-link { display: flex; align-items: center; gap: 8px; color: #38bdf8; text-decoration: none; font-size: 12px; margin-bottom: 6px; padding: 5px 8px; background: #141419; border-radius: 6px; border: 1px solid #2a2a35; }
 
         .chat-message-area { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0a0a0c; }
         .msg-bubble { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
@@ -198,6 +229,8 @@
         .chat-send-btn { background: #a855f7; color: white; width: auto; margin: 0; padding: 10px 16px; font-weight: 600; font-size: 13px; border: none; cursor: pointer; }
 
         .vip-row { border-left: 4px solid #9b59b6; background-color: #1a0f21 !important; }
+        .algo-infobar { background: rgba(52, 152, 219, 0.05); border: 1px solid rgba(52, 152, 219, 0.15); padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid #3498db; }
+        .algo-title { font-size: 12px; font-weight: 500; text-transform: uppercase; color: #3498db; margin: 0; }
 
         @media print {
             body * { visibility: hidden; }
@@ -214,184 +247,192 @@
     <p>Input your job parameters below. The scheduling matrix automatically calculates the resource processing time and groups payloads using optimal queue configurations.</p>
 </header>
 
+<!-- Circular Badges Bar Component -->
+<nav class="badge-nav-panel">
+    <button id="queueBadge" onclick="toggleSection('kitchenQueueBlock', 'queueBadge')" class="badge-circle-pill">
+        🍳 Core Kitchen Queue Status
+    </button>
+    <button id="trackerBadge" onclick="toggleSection('orderTrackerBlock', 'trackerBadge')" class="badge-circle-pill">
+        🔎 Order Status Tracker
+    </button>
+</nav>
+
 <main id="order-terminal" class="interactive-terminal">
+    
+    <!-- Hidden Dropdown Section 1: Core Kitchen Queue Status -->
+    <div id="kitchenQueueBlock" class="collapsible-view-block">
+        <h3 style="border-left-color: var(--accent-primary); color: var(--accent-primary); margin-bottom: 12px;">Live Kitchen Queue Status Map</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Queue Rank</th>
+                    <th>Customer Name</th>
+                    <th>Meal Item</th>
+                    <th>Est Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (locals.jobs && jobs.length > 0) { %>
+                    <% jobs.forEach((job, index) => { %>
+                        <tr class="<%= job.priority === 1 ? 'vip-row' : '' %>">
+                            <td><b>#<%= index + 1 %></b></td>
+                            <td>
+                                <%= job.customerName %>
+                                <% if (job.priority === 1) { %>
+                                    <span class="badge-vip">VIP</span>
+                                <% } %>
+                            </td>
+                            <td><%= job.quantity %>x <%= job.foodName %></td>
+                            <td><%= Math.min(job.processingTime * job.quantity, 10) %> mins</td>
+                            <td><span class="badge-wait"><%= job.status %></span></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align:center; color:#777; padding:20px;">No active orders currently cooking inside the kitchen.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Hidden Dropdown Section 2: Personal Order Status Tracker -->
+    <div id="orderTrackerBlock" class="collapsible-view-block" style="background: var(--bg-surface);">
+        <div class="search-box">
+            <h3 style="margin-top:0; border-left-color: #9b59b6; color: #9b59b6;">🔎 Personal Order Status Tracker</h3>
+            <p style="margin: 0 0 12px 0; font-size:12px; color:var(--text-muted);">Type your unique alphanumeric code below:</p>
+            
+            <form action="/order" method="GET" style="display: flex; gap: 8px; max-width: 500px;">
+                <input type="text" name="searchId" placeholder="e.g., OGI-X8W2" value="<%= locals.searchQuery || '' %>" style="margin:0; flex: 2; background:var(--bg-master);" required>
+                <button type="submit" style="margin:0; flex: 1; background-color: #9b59b6; padding:0; font-weight:600; cursor:pointer;">Track Token</button>
+            </form>
+
+            <% if (locals.searchResult) { %>
+                <% if (searchResult.status === 'Preparing') { %>
+                    <div class="status-box" style="background: #342609; border-left-color: #ffc107; color: #ffc107;">
+                        ⏳ <b>Ticket Found: <%= searchResult.orderId %></b><br>
+                        <b>Queue Place Rank:</b> Position #<%= searchResult.queuePosition %><br>
+                        <b>Est. Countdown:</b> Ready in approx. 10 Mins (<%= searchResult.estimatedTime %>)<br>
+                        <b>Status:</b> Kitchen is preparing your meal. Please wait!
+                    </div>
+                <% } else if (searchResult.status === 'Ready for Pickup') { %>
+                    <div class="status-box">
+                        🎉 <b>🟢 MEAL READY FOR PICKUP</b><br>
+                        <b>Ticket:</b> <%= searchResult.orderId %><br>
+                        <b>Details:</b> <%= searchResult.quantity %>x <%= searchResult.foodName %><br>
+                        <p style="font-size:12px; margin:10px 0 0 0; color:#ff6b6b; font-weight:bold; border-top:1px dashed #2ecc71; padding-top:10px;">
+                            👉 Please proceed to the kitchen counter, present this Order ID to the staff, make your cash payment of ₦<%= searchResult.totalPrice.toLocaleString() %>, and collect your meal plate!
+                        </p>
+                    </div>
+                <% } else if (searchResult.status === 'Collected') { %>
+                    <div class="status-box" style="background: var(--bg-master); border-left-color: #6c757d; color: #aaa;">
+                        ✅ <b>ORDER DISPATCHED & COLLECTED</b><br>
+                        <b>Ticket Code:</b> <%= searchResult.orderId %><br>
+                        <b>Log Status:</b> Payment Confirmed. Handed over to client. Thank you for dining with OGITECH Restaurant!
+                    </div>
+                <% } %>
+            <% } else if (locals.searchQuery && locals.searchError) { %>
+                <div class="status-box" style="background:#3a1616; color:#ff9999; border-left-color:#e74c3c;">
+                    ❌ Token code <b><%= searchQuery %></b> not recognized by system records.
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Main View Form Layer -->
     <div class="algo-infobar">
         <p class="algo-title">🤖 Active Algorithmic Optimizer Mode:</p>
-        <span style="background: #E63946; color: #fff; padding: 5px 14px; font-size: 11px; font-weight: 700; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+        <span style="background: #E63946; color: #fff; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 20px; text-transform: uppercase;">
             <%= locals.algo === 'sjf' ? 'Shortest Job First (SJF)' : 'First-In, First-Out (FIFO)' %>
         </span>
     </div>
 
     <div class="row">
         <div class="col-main">
-            <div style="padding-bottom: 25px; border-bottom: 2px dashed var(--border-glow);">
-                <h3>Place Food Order</h3>
-                
-                <% if (locals.successMsg && locals.ticket) { %>
-                    <div id="targetReceiptPrintOut" class="receipt-wrapper">
-                        <h4 style="margin:0 0 5px 0; font-weight:bold; letter-spacing:1px;">OGITECH CAFE</h4>
-                        <small style="font-size:11px;">E-Ordering Token System</small>
-                        <div class="receipt-line"></div>
-                        <p style="font-size:11px; margin:4px 0; color:#555;">UNIQUE TRACKING CODE</p>
-                        <p style="font-size: 30px; font-weight: bold; margin: 6px 0; letter-spacing: 1px;"><%= ticket.orderId %></p>
-                        <div class="receipt-line"></div>
-                        
-                        <div style="background: #fdf2f2; padding: 12px; border: 1px dashed #f5c2c2; border-radius: 6px; margin: 12px 0; text-align: center;">
-                            <p style="margin: 0; font-size: 11px; font-weight: 700; color: #7f1d1d; letter-spacing: 0.5px;">🔢 LIVE QUEUE PLACEMENT</p>
-                            <p style="margin: 4px 0; font-size: 22px; font-weight: 800; color: var(--accent-primary);">Position #<%= ticket.queuePosition %></p>
-                            <div style="border-top: 1px dashed #f5c2c2; margin: 8px 0;"></div>
-                            <p style="margin: 0; font-size: 12px; font-weight: 700; color: #15803d;">⏰ MEAL READY IN: 10 MINS</p>
-                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #4b5563;">Est. Handover Counter Clock: <%= ticket.estimatedTime %></p>
-                            <small style="display: block; margin-top: 6px; font-size: 9px; color: #6b7280; font-style: italic;">
-                                Optimization Mode: <%= ticket.engineMode %>
-                            </small>
-                        </div>
-
-                        <p style="text-align:left; margin:5px 0; font-size:12px;"><b>Client Name:</b> <%= ticket.customerName %></p>
-                        <p style="text-align:left; margin:5px 0; font-size:12px;"><b>Meal Combo:</b> <%= ticket.quantity %>x <%= ticket.foodName %></p>
-                        <p style="text-align:left; margin:5px 0; font-size:12px;"><b>Queue Class:</b>
-                            <% if (ticket.priority === 1) { %>
-                                <span class="badge-vip" style="font-weight:bold;">👑 VIP FAST-TRACK (+₦500)</span>
-                            <% } else { %>
-                                <span style="font-weight:bold; color:#555;">STANDARD DINING</span>
-                            <% } %>
-                        </p>
-                        
-                        <div class="receipt-line"></div>
-                        <p style="font-size:16px; margin:4px 0; text-align:right; font-weight:bold;">TOTAL DUE: ₦<%= ticket.totalPrice.toLocaleString() %></p>
-                        <div class="receipt-line"></div>
-                        <small style="font-size:10px; display:block; color:#444; line-height:1.3;">Take a screenshot or click below to print out/download directly as a PDF.</small>
+            <h3>Place Food Order Terminal</h3>
+            
+            <% if (locals.successMsg && locals.ticket) { %>
+                <div id="targetReceiptPrintOut" class="receipt-wrapper">
+                    <h4 style="margin:0 0 5px 0; font-weight:bold; letter-spacing:1px;">OGITECH CAFE</h4>
+                    <small style="font-size:11px;">E-Ordering Token System</small>
+                    <div class="receipt-line"></div>
+                    <p style="font-size:11px; margin:4px 0; color:#555;">UNIQUE TRACKING CODE</p>
+                    <p style="font-size: 30px; font-weight: bold; margin: 6px 0; letter-spacing: 1px;"><%= ticket.orderId %></p>
+                    <div class="receipt-line"></div>
+                    
+                    <div style="background: #fdf2f2; padding: 12px; border: 1px dashed #f5c2c2; border-radius: 6px; margin: 12px 0; text-align: center;">
+                        <p style="margin: 0; font-size: 11px; font-weight: 700; color: #7f1d1d; letter-spacing: 0.5px;">🔢 LIVE QUEUE PLACEMENT</p>
+                        <p style="margin: 4px 0; font-size: 22px; font-weight: 800; color: var(--accent-primary);">Position #<%= ticket.queuePosition %></p>
+                        <div style="border-top: 1px dashed #f5c2c2; margin: 8px 0;"></div>
+                        <p style="margin: 0; font-size: 12px; font-weight: 700; color: #15803d;">⏰ MEAL READY IN: 10 MINS</p>
+                        <p style="margin: 4px 0 0 0; font-size: 11px; color: #4b5563;">Est. Handover Counter Clock: <%= ticket.estimatedTime %></p>
                     </div>
-                    <button onclick="window.print();" class="btn-print">🖨 Download / Print Digital Receipt</button>
-                <% } %>
 
-                <form action="/place-order" method="POST" id="premiumOrderForm">
-                    <label>Your Name:</label>
-                    <input type="text" name="customerName" placeholder="Enter your first name" required>
-
-                    <label>Your Email Address:</label>
-                    <input type="email" name="customerEmail" placeholder="e.g., name@gmail.com" required>
-
-                    <label>Select Your Desired Meal Combo Menu:</label>
-                    <select name="foodId">
-                        <% if (locals.menu) { %>
-                            <% menu.forEach(dish => { %>
-                                <option value="<%= dish.id %>"><%= dish.name %> (₦<%= dish.price.toLocaleString() %>)</option>
-                            <% }) %>
-                        <% } %>
-                    </select>
-
-                    <label>Number of Plates:</label>
-                    <select name="quantity">
-                        <option value="1">1 Plate</option>
-                        <option value="2">2 Plates</option>
-                        <option value="3">3 Plates</option>
-                        <option value="4">4 Plates</option>
-                        <option value="5">5 Plates</option>
-                    </select>
-
-                    <label>Service Priority Level:</label>
-                    <select name="priority">
-                        <option value="0">Standard Ordering Queue (Regular Base Price)</option>
-                        <option value="1">VIP / Fast-Track Dining (+₦500 Speed Premium)</option>
-                    </select>
-
-                    <button type="submit" class="order-dispatch-btn" id="submitBtn">
-                        <span id="btnText">Send Order to Kitchen</span>
-                        <div class="spinner-inline" id="btnSpinner"></div>
-                    </button>
-                </form>
-            </div>
-
-            <div style="margin-top: 40px;">
-                <h3 style="border-left-color: var(--accent-primary); color: var(--accent-primary); margin-bottom: 12px;">Core Kitchen Queue Status</h3>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Queue Rank</th>
-                            <th>Customer Name</th>
-                            <th>Meal Item</th>
-                            <th>Est Time</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% if (locals.jobs && jobs.length > 0) { %>
-                            <% jobs.forEach((job, index) => { %>
-                                <tr class="<%= job.priority === 1 ? 'vip-row' : '' %>">
-                                    <td><b>#<%= index + 1 %></b></td>
-                                    <td>
-                                        <%= job.customerName %>
-                                        <% if (job.priority === 1) { %>
-                                            <span class="badge-vip">VIP</span>
-                                        <% } %>
-                                    </td>
-                                    <td><%= job.quantity %>x <%= job.foodName %></td>
-                                    <td><%= job.processingTime * job.quantity %> mins</td>
-                                    <td><span class="badge-wait"><%= job.status %></span></td>
-                                </tr>
-                            <% }) %>
+                    <p style="text-align:left; margin:5px 0; font-size:12px;"><b>Client Name:</b> <%= ticket.customerName %></p>
+                    <p style="text-align:left; margin:5px 0; font-size:12px;"><b>Meal Combo:</b> <%= ticket.quantity %>x <%= ticket.foodName %></p>
+                    <p style="text-align:left; margin:5px 0; font-size:12px;"><b>Queue Class:</b>
+                        <% if (ticket.priority === 1) { %>
+                            <span class="badge-vip" style="font-weight:bold;">👑 VIP FAST-TRACK (+₦500)</span>
                         <% } else { %>
-                            <tr><td colspan="5" style="text-align:center; color:#777; padding:20px;">No active orders currently cooking inside the kitchen.</td></tr>
+                            <span style="font-weight:bold; color:#555;">STANDARD DINING</span>
                         <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                    </p>
+                    
+                    <div class="receipt-line"></div>
+                    <p style="font-size:16px; margin:4px 0; text-align:right; font-weight:bold;">TOTAL DUE: ₦<%= ticket.totalPrice.toLocaleString() %></p>
+                    <div class="receipt-line"></div>
+                </div>
+                <button onclick="window.print();" class="btn-print">🖨 Download / Print Digital Receipt</button>
+            <% } %>
 
-        <div class="col-side">
-            <div class="search-box">
-                <h3 style="margin-top:0; border-left-color: #9b59b6; color: #9b59b6;">🔎 Personal Order Status Tracker</h3>
-                <p style="margin: 0 0 12px 0; font-size:12px; color:var(--text-muted);">Type your unique alphanumeric code below:</p>
-                
-                <form action="/order" method="GET" style="display: flex; gap: 8px;">
-                    <input type="text" name="searchId" placeholder="e.g., OGI-X8W2" value="<%= locals.searchQuery || '' %>" style="margin:0; flex: 2; background:var(--bg-master);" required>
-                    <button type="submit" style="margin:0; flex: 1; background-color: #9b59b6; padding:0; font-weight:600;">Track</button>
-                </form>
+            <form action="/place-order" method="POST" id="premiumOrderForm">
+                <label>Your Name:</label>
+                <input type="text" name="customerName" placeholder="Enter your first name" required>
 
-                <% if (locals.searchResult) { %>
-                    <% if (searchResult.status === 'Preparing') { %>
-                        <div class="status-box" style="background: #342609; border-left-color: #ffc107; color: #ffc107;">
-                            ⏳ <b>Ticket Found: <%= searchResult.orderId %></b><br>
-                            <b>Queue Place Rank:</b> Position #<%= searchResult.queuePosition %><br>
-                            <b>Est. Countdown:</b> Ready in approx. 10 Mins (<%= searchResult.estimatedTime %>)<br>
-                            <b>Status:</b> Kitchen is preparing your meal. Please wait!
-                        </div>
-                    <% } else if (searchResult.status === 'Ready for Pickup') { %>
-                        <div class="status-box">
-                            🎉 <b>🟢 MEAL READY FOR PICKUP</b><br>
-                            <b>Ticket:</b> <%= searchResult.orderId %><br>
-                            <b>Details:</b> <%= searchResult.quantity %>x <%= searchResult.foodName %><br>
-                            <p style="font-size:12px; margin:10px 0 0 0; color:#ff6b6b; font-weight:bold; border-top:1px dashed #2ecc71; padding-top:10px;">
-                                👉 Please proceed to the kitchen counter, present this Order ID to the staff, make your cash payment of ₦<%= searchResult.totalPrice.toLocaleString() %>, and collect your meal plate!
-                            </p>
-                        </div>
-                    <% } else if (searchResult.status === 'Collected') { %>
-                        <div class="status-box" style="background: var(--bg-master); border-left-color: #6c757d; color: #aaa;">
-                            ✅ <b>ORDER DISPATCHED & COLLECTED</b><br>
-                            <b>Ticket Code:</b> <%= searchResult.orderId %><br>
-                            <b>Log Status:</b> Payment Confirmed. Handed over to client. Thank you for dining with OGITECH Restaurant!
-                        </div>
+                <label>Your Email Address:</label>
+                <input type="email" name="customerEmail" placeholder="e.g., name@gmail.com" required>
+
+                <label>Select Your Desired Meal Combo Menu:</label>
+                <select name="foodId">
+                    <% if (locals.menu) { %>
+                        <% menu.forEach(dish => { %>
+                            <option value="<%= dish.id %>"><%= dish.name %> (₦<%= dish.price.toLocaleString() %>)</option>
+                        <% }) %>
                     <% } %>
-                <% } else if (locals.searchQuery && locals.searchError) { %>
-                    <div class="status-box" style="background:#3a1616; color:#ff9999; border-left-color:#e74c3c;">
-                        ❌ Token code <b><%= searchQuery %></b> not recognized by system records.
-                    </div>
-                <% } %>
-            </div>
+                </select>
 
-            <div class="hours-badge">
-                <h4 style="margin: 0 0 8px 0; color: #E63946; font-size: 15px; font-weight: 600;">🕒 Official Operating Hours</h4>
-                <p style="margin: 4px 0; font-size: 13px;"><b>Days Open:</b> Monday to Saturday</p>
-                <p style="margin: 4px 0; font-size: 13px;"><b>Service Period:</b> 8:00 AM – 8:00 PM</p>
-            </div>
+                <label>Number of Plates:</label>
+                <select name="quantity">
+                    <option value="1">1 Plate</option>
+                    <option value="2">2 Plates</option>
+                    <option value="3">3 Plates</option>
+                    <option value="4">4 Plates</option>
+                    <option value="5">5 Plates</option>
+                </select>
+
+                <label>Service Priority Level:</label>
+                <select name="priority">
+                    <option value="0">Standard Ordering Queue (Regular Base Price)</option>
+                    <option value="1">VIP / Fast-Track Dining (+₦500 Speed Premium)</option>
+                </select>
+
+                <button type="submit" class="order-dispatch-btn" id="submitBtn">
+                    <span id="btnText">Send Order to Kitchen</span>
+                    <div class="spinner-inline" id="btnSpinner"></div>
+                </button>
+            </form>
         </div>
     </div>
 </main>
 
+<div class="bottom-info-deck">
+    <div class="hours-badge">
+        <h4 style="margin: 0 0 6px 0; color: #E63946; font-size: 14px; font-weight: 600;">🕒 Official Operating Hours</h4>
+        <span style="font-size: 12px; display:block;"><b>Days Open:</b> Monday to Saturday | <b>Service Period:</b> 8:00 AM – 8:00 PM</span>
+    </div>
+</div>
+
 <div class="footer-interactive-trigger">
-    <button onclick="toggleChatWindow()" class="footer-bot-btn">💬 Need Help? Chat with Bot / Agent</button>
+    <button onclick="toggleChatWindow()" class="footer-bot-btn">💬 Need Help?</button>
 </div>
 
 <div id="liveChatWidgetPanel" class="live-chat-panel">
@@ -419,17 +460,30 @@
 </div>
 
 <script>
-    // INITIALIZE REAL-TIME CLIENT SOCKETS
     const clientSocket = io();
 
-    // Catch algorithm updates from admin instantly and refresh the client grid layout automatically
     clientSocket.on('queueUpdate', (data) => {
-        console.log("Sync notification caught from server core:", data.message);
-        // Triggers a quiet window reload to display sorting changes without dropping current route states
         window.location.reload();
     });
 
-    // 1. Paystack Connection Interceptor Loading Effect
+    // Elegant Section Toggling Logic via Circles
+    function toggleSection(blockId, badgeId) {
+        const targetBlock = document.getElementById(blockId);
+        const targetBadge = document.getElementById(badgeId);
+        const isCurrentOpen = targetBlock.style.display === 'block';
+
+        // Close all sections and clear active classes
+        document.querySelectorAll('.collapsible-view-block').forEach(block => block.style.display = 'none');
+        document.querySelectorAll('.badge-circle-pill').forEach(badge => badge.classList.remove('active-badge'));
+
+        // Toggle open if it was closed
+        if (!isCurrentOpen) {
+            targetBlock.style.display = 'block';
+            targetBadge.classList.add('active-badge');
+            targetBlock.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
     const form = document.getElementById('premiumOrderForm');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
@@ -440,69 +494,54 @@
         submitBtn.disabled = true;
         btnText.innerText = "Connecting To Secure Banking Gateway...";
         btnSpinner.style.display = "inline-block";
-        submitBtn.style.background = "linear-gradient(135deg, #7f8c8d, #95a5a6)";
     });
 
-    // 2. Adaptive Page Snap Retention
+    // Keep Tracker open if URL contains query search responses
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('successMsg') || urlParams.has('searchId') || urlParams.has('error')) {
+        if (urlParams.has('searchId')) {
+            toggleSection('orderTrackerBlock', 'trackerBadge');
+        } else if (urlParams.has('successMsg')) {
             const destinationElement = document.getElementById('order-terminal');
-            if (destinationElement) {
-                destinationElement.scrollIntoView({ behavior: 'instant' });
-            }
+            if (destinationElement) destinationElement.scrollIntoView({ behavior: 'instant' });
         }
     });
 
-    // 3. Dynamic Widget UI Panel Control Toggles
     function toggleChatWindow() {
         const panel = document.getElementById('liveChatWidgetPanel');
-        if (panel.style.display === 'flex') {
-            panel.style.display = 'none';
-        } else {
-            panel.style.display = 'flex';
+        panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+        if(panel.style.display === 'flex') {
             const consoleArea = document.getElementById('chatMsgConsole');
             consoleArea.scrollTop = consoleArea.scrollHeight;
         }
     }
 
-    // 4. Simulated AI Assistant Conversational Log Responders
-    function handleChatEnter(e) {
-        if (e.key === 'Enter') sendTerminalChatMessage();
-    }
+    function handleChatEnter(e) { if (e.key === 'Enter') sendTerminalChatMessage(); }
 
     function sendTerminalChatMessage() {
         const inputField = document.getElementById('userChatInput');
         const consoleArea = document.getElementById('chatMsgConsole');
         const text = inputField.value.trim();
-        
         if (!text) return;
 
-        // Append User Speech Message Bubble
         const userBubble = document.createElement('div');
         userBubble.className = 'msg-bubble msg-user';
         userBubble.innerText = text;
         consoleArea.appendChild(userBubble);
-        
         inputField.value = '';
         consoleArea.scrollTop = consoleArea.scrollHeight;
 
-        // Delay Response Action to simulate network thinking activity loops
         setTimeout(() => {
             const botBubble = document.createElement('div');
             botBubble.className = 'msg-bubble msg-bot';
-            
             const upperText = text.toUpperCase();
-            if (upperText.includes('PAY') || upperText.includes('MONEY') || upperText.includes('PAYSTACK')) {
-                botBubble.innerText = "If your payment failed but you were debited, please wait 5 minutes for Paystack reconciliation, or click our direct Call/Email links above to send your bank text receipt alert directly to our supervisor counter.";
-            } else if (upperText.includes('MENU') || upperText.includes('FOOD') || upperText.includes('PRICE')) {
-                botBubble.innerText = "Our complete premium menu listings are displayed right on the current ordering panel terminal screen. Select your combination item block, check out using the secure online payment transfer matrix, and watch the real-time queue grid status column update live!";
-            } else if (upperText.includes('TIME') || upperText.includes('SLOW') || upperText.includes('QUEUE')) {
-                botBubble.innerText = "OGITECH operates on advanced Shortest Job First (SJF) optimization logic to process orders rapidly. Check your current queue rank placement number # on the tracking grid. If you need immediate cooking, select the VIP Speed Track option when ordering.";
+            if (upperText.includes('PAY') || upperText.includes('MONEY')) {
+                botBubble.innerText = "If payment fails but you're debited, wait 5 minutes for Paystack or tap the hotlines above to contact us.";
+            } else if (upperText.includes('MENU') || upperText.includes('FOOD')) {
+                botBubble.innerText = "Select your desired meal combo directly from our menu option dropdown form above.";
             } else {
-                botBubble.innerText = "Received. Your query context has been queued. For instant assistance, please use the direct Call Link (+234 702 685 2515) or email our monitoring deck at olotujapheth400@gmail.com directly!";
+                botBubble.innerText = "Query logged. For instant real-time resolution call support lines directly at +234 702 685 2515.";
             }
-            
             consoleArea.appendChild(botBubble);
             consoleArea.scrollTop = consoleArea.scrollHeight;
         }, 800);
