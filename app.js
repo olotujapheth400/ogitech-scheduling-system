@@ -366,31 +366,29 @@ app.post('/change-algo', isAdmin, (req, res) => {
     res.redirect('/admin');
 });
 
-/* ==========================================================================
-   NEW ADDITIONS: FULL LEDGER & AUDIT LOG ROUTING SYSTEM
-   ========================================================================== */
+// =========================================================================
+// MATCHING ARCHIVE VIEW ROUTES FOR EXISTING EJS LINKS
+// =========================================================================
 
-// 1. Staff View Full Ledger Route
-app.get('/staff/ledger', isStaff, async (req, res) => {
+app.get('/staff/archive', isStaff, async (req, res) => {
     try {
-        const fullLedger = await Order.find({ status: 'Collected' }).sort({ updatedAt: -1 });
-        res.render('staff-ledger', { history: fullLedger });
-    } catch (err) {
-        res.status(500).send("Staff Ledger Database Fetch Error");
+        const fullServedHistory = await Order.find({ status: 'Collected' }).sort({ updatedAt: -1 });
+        res.render('archive-view', { history: fullServedHistory });
+    } catch (err) { 
+        res.status(500).send("Ledger Archive View Render Error"); 
     }
 });
 
-// 2. Admin View Full Audit Logs Route
-app.get('/admin/audit-logs', isAdmin, async (req, res) => {
+app.get('/admin/archive', isAdmin, async (req, res) => {
     try {
-        const fullAuditLogs = await Order.find({}).sort({ createdAt: -1 });
-        res.render('admin-audit', { logs: fullAuditLogs });
-    } catch (err) {
-        res.status(500).send("Admin Audit Log Database Fetch Error");
+        const fullServedHistory = await Order.find({ status: 'Collected' }).sort({ updatedAt: -1 });
+        res.render('archive-view', { history: fullServedHistory });
+    } catch (err) { 
+        res.status(500).send("Administrative Audit Logs Render Error"); 
     }
 });
 
-/* ========================================================================== */
+// =========================================================================
 
 io.on('connection', (socket) => {
     console.log("WEBSOCKET STREAM TUNNEL SYNCED.");
