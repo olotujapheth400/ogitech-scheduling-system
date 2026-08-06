@@ -1,3 +1,4 @@
+require('dotenv').config();
 const dns = require('node:dns');
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
@@ -19,7 +20,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-    secret: 'ogitech_secret_key_2026',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 3600000 }
@@ -34,17 +35,17 @@ app.use((req, res, next) => {
     next();
 });
 
-const PAYSTACK_SECRET_KEY = "sk_test_1ca6b8f88bca8aeea9fa4b2dc9d00972a4ee7bd0";
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
 const mailTransport = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'olotujapheth400gmail@gmail.com',
-        pass: 'Ivpdzphdhefmdpvi' 
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS 
     }
 });
 
-const MONGO_URI = "mongodb+srv://Japheth:Password1320@cluster0.4yf5meu.mongodb.net/ogitech_restaurant?appName=Cluster0";
+const MONGO_URI = process.env.MONGO_URI;
 
 mongoose.connect(MONGO_URI)
     .then(() => console.log("CONNECTED: Secured Cloud Pipeline to MongoDB Atlas."))
@@ -65,8 +66,8 @@ const orderSchema = new mongoose.Schema({
 
 const Order = mongoose.model('Order', orderSchema);
 
-const ADMIN_CREDENTIALS = { username: "admin", password: "pass1120" };
-const STAFF_CREDENTIALS = { username: "staff1", password: "flyboy1320" };
+const ADMIN_CREDENTIALS = { username: process.env.ADMIN_USER, password: process.env.ADMIN_PASS };
+const STAFF_CREDENTIALS = { username: process.env.STAFF_USER, password: process.env.STAFF_PASS };
 let currentAlgorithm = 'sjf'; 
 
 const MENU_ITEMS = [
@@ -225,7 +226,7 @@ app.post('/place-order', async (req, res) => {
 
 function sendReceiptEmail(orderInstance) {
     const emailLayout = {
-        from: '"OGITECH Restaurant" <olotujapheth400gmail@gmail.com>',
+        from: '"OGITECH Restaurant" <' + process.env.EMAIL_USER + '>',
         to: orderInstance.customerEmail,
         subject: `Your Smart Food Order Receipt - Token: ${orderInstance.orderId}`,
         html: `
