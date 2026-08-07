@@ -1,5 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/package.json",
   "name": "ogitech-job-scheduler",
   "version": "1.0.0",
   "description": "Job Scheduling System for Food Processing using OGITECH Restaurant as a case study",
