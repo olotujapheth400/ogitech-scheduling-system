@@ -20,7 +20,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET || 'ogitech_secret_key',
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 3600000 }
@@ -68,27 +68,29 @@ const Order = mongoose.model('Order', orderSchema);
 
 const ADMIN_CREDENTIALS = { username: process.env.ADMIN_USER, password: process.env.ADMIN_PASS };
 const STAFF_CREDENTIALS = { username: process.env.STAFF_USER, password: process.env.STAFF_PASS };
+const SUB_ADMINS = []; // Stores dynamically created sub-admins
+
 let currentAlgorithm = 'sjf'; 
 
 const MENU_ITEMS = [
-    { id: "combo1", name: "Jollof Rice & Fried Rice with Chicken & Plantain", price: 3000, time: 10 },
-    { id: "combo2", name: "White Rice & Beans with Fish & Assorted Meat", price: 2800, time: 10 },
-    { id: "combo3", name: "Pounded Yam / Amala with Egusi / Ewedu & Beef", price: 3000, time: 10 },
-    { id: "combo4", name: "Spaghetti Deluxe with Turkey & Coleslaw", price: 2900, time: 10 },
-    { id: "combo5", name: "Ofada Rice with Ayamase Sauce, Egg & Ponmo", price: 3000, time: 10 },
-    { id: "combo6", name: "Eba (Garri) with Native Okro Soup & Fresh Fish", price: 2500, time: 10 },
-    { id: "combo7", name: "Coconut Rice with Peppered Gizzard & Plantain Fries", price: 2800, time: 10 },
-    { id: "combo8", name: "Yam Porridge (Asaro) with Peppered Fish & Shaki", price: 2700, time: 10 },
-    { id: "combo9", name: "Semovita / Wheat with Efo Riro & Assorted Meat", price: 3000, time: 10 },
-    { id: "combo10", name: "Gizdodo Special (Gizzard & Plantain Mix) with White Rice", price: 2600, time: 10 },
-    { id: "combo11", name: "Beans Porridge (Ewa Agoyin) with Fried Fish & Agege Bread", price: 2200, time: 10 },
-    { id: "combo12", name: "Fried Yam, Potato & Akara Combo with Pepper Sauce", price: 2000, time: 10 },
-    { id: "combo13", name: "Village Rice (Locust Beans Blend) with Smoked Fish & Egg", price: 2500, time: 10 },
-    { id: "combo14", name: "Abula Special (Amala, Gbegiri, Ewedu) with Ogunfe", price: 3000, time: 10 },
-    { id: "snack1", name: "Crispy Chicken and Chips Platter", price: 2500, time: 10 },
-    { id: "snack2", name: "Golden Baked Egg Roll", price: 400, time: 10 },
-    { id: "snack3", name: "Gourmet Sliced Cake Slice", price: 600, time: 10 },
-    { id: "snack4", name: "Sausage Roll & Meat Pie Pastry Mix", price: 800, time: 10 }
+    { id: "combo1", name: "Jollof Rice & Fried Rice with Chicken & Plantain", price: 3000, time: 10, category: "Combo" },
+    { id: "combo2", name: "White Rice & Beans with Fish & Assorted Meat", price: 2800, time: 10, category: "Combo" },
+    { id: "combo3", name: "Pounded Yam / Amala with Egusi / Ewedu & Beef", price: 3000, time: 10, category: "Combo" },
+    { id: "combo4", name: "Spaghetti Deluxe with Turkey & Coleslaw", price: 2900, time: 10, category: "Combo" },
+    { id: "combo5", name: "Ofada Rice with Ayamase Sauce, Egg & Ponmo", price: 3000, time: 10, category: "Combo" },
+    { id: "combo6", name: "Eba (Garri) with Native Okro Soup & Fresh Fish", price: 2500, time: 10, category: "Combo" },
+    { id: "combo7", name: "Coconut Rice with Peppered Gizzard & Plantain Fries", price: 2800, time: 10, category: "Combo" },
+    { id: "combo8", name: "Yam Porridge (Asaro) with Peppered Fish & Shaki", price: 2700, time: 10, category: "Combo" },
+    { id: "combo9", name: "Semovita / Wheat with Efo Riro & Assorted Meat", price: 3000, time: 10, category: "Combo" },
+    { id: "combo10", name: "Gizdodo Special (Gizzard & Plantain Mix) with White Rice", price: 2600, time: 10, category: "Combo" },
+    { id: "combo11", name: "Beans Porridge (Ewa Agoyin) with Fried Fish & Agege Bread", price: 2200, time: 10, category: "Combo" },
+    { id: "combo12", name: "Fried Yam, Potato & Akara Combo with Pepper Sauce", price: 2000, time: 10, category: "Combo" },
+    { id: "combo13", name: "Village Rice (Locust Beans Blend) with Smoked Fish & Egg", price: 2500, time: 10, category: "Combo" },
+    { id: "combo14", name: "Abula Special (Amala, Gbegiri, Ewedu) with Ogunfe", price: 3000, time: 10, category: "Combo" },
+    { id: "snack1", name: "Crispy Chicken and Chips Platter", price: 2500, time: 10, category: "Snack" },
+    { id: "snack2", name: "Golden Baked Egg Roll", price: 400, time: 10, category: "Snack" },
+    { id: "snack3", name: "Gourmet Sliced Cake Slice", price: 600, time: 10, category: "Snack" },
+    { id: "snack4", name: "Sausage Roll & Meat Pie Pastry Mix", price: 800, time: 10, category: "Snack" }
 ];
 
 function generateUniqueId() {
@@ -201,7 +203,7 @@ app.post('/place-order', async (req, res) => {
             customerName: customerName,
             customerEmail: customerEmail,
             foodName: selectedMeal.name,
-            processingTime: 10, 
+            processingTime: selectedMeal.time || 10, 
             price: selectedMeal.price,
             quantity: qty,
             totalPrice: calculatedPrice, 
@@ -296,13 +298,20 @@ app.get('/staff', isStaff, async (req, res) => {
 });
 
 app.get('/ogitech-boardroom-vault-2026', (req, res) => { res.render('admin-login', { error: req.query.error || null }); });
+
 app.post('/ogitech-boardroom-vault-2026', (req, res) => {
     const { username, password } = req.body;
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-        req.session.isAdmin = true; return res.redirect('/admin');
+    
+    const isPrimaryAdmin = username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password;
+    const isSubAdmin = SUB_ADMINS.some(sub => sub.username === username && sub.password === password);
+
+    if (isPrimaryAdmin || isSubAdmin) {
+        req.session.isAdmin = true; 
+        return res.redirect('/admin');
     }
     res.redirect('/ogitech-boardroom-vault-2026?error=true');
 });
+
 app.get('/admin-logout', (req, res) => { req.session.isAdmin = null; res.redirect('/ogitech-boardroom-vault-2026'); });
 
 app.get('/admin', isAdmin, async (req, res) => {
@@ -316,9 +325,85 @@ app.get('/admin', isAdmin, async (req, res) => {
         const totalRevenue = revenueAggregation.length > 0 ? revenueAggregation[0].total : 0;
         
         let scheduledJobs = currentAlgorithm === 'sjf' ? scheduler.sjf(activeJobs) : scheduler.fifo(activeJobs);
-        res.render('admin', { jobs: scheduledJobs, algo: currentAlgorithm, pendingPickup: readyToCollect, completedCount: totalDispatchedCount, revenue: totalRevenue, history: servedHistory, unverifiedOrders: unverifiedPool });
+        
+        res.render('admin', { 
+            jobs: scheduledJobs, 
+            algo: currentAlgorithm, 
+            pendingPickup: readyToCollect, 
+            completedCount: totalDispatchedCount, 
+            revenue: totalRevenue, 
+            history: servedHistory, 
+            unverifiedOrders: unverifiedPool,
+            menu: MENU_ITEMS,
+            meals: MENU_ITEMS
+        });
     } catch (err) { res.status(500).send("Admin Core View Render Error"); }
 });
+
+// =========================================================================
+// ADMIN MEAL & SUB-ADMIN MANAGEMENT ROUTES
+// =========================================================================
+
+app.post('/admin/add-food', isAdmin, async (req, res) => {
+    try {
+        const { name, foodName, mealName, price, processingTime, time, category, imageUrl, description } = req.body;
+        
+        const finalName = name || foodName || mealName;
+        const finalPrice = parseFloat(price) || 0;
+        const finalTime = parseInt(processingTime || time) || 10;
+        const finalCategory = category || 'Meal';
+        
+        if (!finalName || finalPrice <= 0) {
+            return res.redirect('/admin?error=invalid_meal_data');
+        }
+
+        const newMeal = {
+            id: `custom_${Date.now()}`,
+            name: finalName,
+            price: finalPrice,
+            time: finalTime,
+            category: finalCategory,
+            imageUrl: imageUrl || '',
+            description: description || ''
+        };
+
+        MENU_ITEMS.push(newMeal);
+        res.redirect('/admin');
+    } catch (err) {
+        console.error("Error adding meal:", err);
+        res.status(500).send("Error adding food item");
+    }
+});
+
+app.post('/admin/delete-food/:id', isAdmin, async (req, res) => {
+    try {
+        const mealId = req.params.id;
+        const index = MENU_ITEMS.findIndex(item => item.id === mealId);
+        if (index !== -1) {
+            MENU_ITEMS.splice(index, 1);
+        }
+        res.redirect('/admin');
+    } catch (err) {
+        res.status(500).send("Error deleting food item");
+    }
+});
+
+app.post('/admin/create-admin', isAdmin, async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        if (username && password) {
+            SUB_ADMINS.push({
+                username: username.trim(),
+                password: password.trim()
+            });
+        }
+        res.redirect('/admin');
+    } catch (err) {
+        res.status(500).send("Error creating sub-admin account");
+    }
+});
+
+// =========================================================================
 
 app.post('/admin/force-approve', isAdmin, async (req, res) => {
     const targetOrderId = req.body.orderId ? req.body.orderId.toUpperCase().trim() : null;
