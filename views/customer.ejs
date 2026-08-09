@@ -36,6 +36,78 @@
             min-height: 100vh;
         }
 
+        /* Top Mobile Header (Hidden on Desktop) */
+        .mobile-header {
+            display: none;
+            background: var(--bg-surface);
+            border-bottom: 1px solid var(--border-glow);
+            padding: 12px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
+            box-sizing: border-box;
+        }
+
+        .mobile-brand-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-brand-title h2 {
+            margin: 0;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+
+        .mobile-brand-title span {
+            color: var(--accent-primary);
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mobile-toggle-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border-glow);
+            color: #fff;
+            font-size: 20px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .mobile-toggle-btn:hover {
+            background: var(--bg-surface-elevated);
+        }
+
+        /* Sidebar Backdrop Overlay */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 140;
+        }
+
+        .sidebar-backdrop.active {
+            display: block;
+        }
+
+        /* App Sidebar Navigation Drawer */
         .app-sidebar { 
             width: 300px; 
             background: var(--bg-surface); 
@@ -49,7 +121,8 @@
             top: 0;
             bottom: 0;
             left: 0;
-            z-index: 50;
+            z-index: 150;
+            transition: transform 0.3s ease;
         }
 
         .brand-header {
@@ -332,6 +405,7 @@
         .order-dispatch-btn:hover { transform: translateY(-2px); }
         .order-dispatch-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
+        .table-responsive { width: 100%; overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; background: var(--bg-surface); border-radius: 8px; overflow: hidden; }
         th, td { border-bottom: 1px solid var(--border-glow); padding: 16px; text-align: left; font-size: 14px; }
         th { background-color: var(--bg-surface-elevated); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
@@ -361,6 +435,49 @@
         .chat-input-row input { flex: 1; padding: 10px; background: #0a0a0c; border: 1px solid #2a2a35; color: white; border-radius: 6px; }
         .chat-send-btn { background: #a855f7; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: 600; }
 
+        /* Responsive Styles for Mobile (< 768px) */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            
+            .mobile-header { display: flex; }
+
+            .app-sidebar {
+                width: 270px;
+                transform: translateX(-100%);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+            }
+
+            .app-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 75px 15px 25px 15px;
+            }
+
+            .input-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-box form {
+                flex-direction: column;
+            }
+
+            .search-box button {
+                padding: 12px;
+            }
+
+            .live-chat-panel {
+                width: calc(100vw - 30px);
+                right: 15px;
+                left: 15px;
+                bottom: 80px;
+            }
+        }
+
         @media print {
             body * { visibility: hidden; }
             #targetReceiptPrintOut, #targetReceiptPrintOut * { visibility: visible; }
@@ -370,7 +487,20 @@
 </head>
 <body>
 
-<div class="app-sidebar">
+<!-- Mobile Header Bar -->
+<header class="mobile-header">
+    <div class="mobile-brand-title">
+        <h2>OGITECH</h2>
+        <span>Food Express Terminal</span>
+    </div>
+    <button class="mobile-toggle-btn" onclick="toggleSidebarDrawer()">☰</button>
+</header>
+
+<!-- Backdrop Overlay for Mobile Drawer -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebarDrawer()"></div>
+
+<!-- Slide-over Mobile Sidebar -->
+<div class="app-sidebar" id="customerSidebar">
     <div class="brand-header">
         <h2>OGITECH</h2>
         <span>Food Express Terminal</span>
@@ -569,35 +699,37 @@
         <h3>🍳 Live Kitchen Queue Status</h3>
         <p style="color: var(--text-muted); margin-bottom: 20px;">Public view of active orders currently being processed by the kitchen algorithm.</p>
         
-        <table>
-            <thead>
-                <tr>
-                    <th>Rank</th>
-                    <th>Customer Name</th>
-                    <th>Meal Item</th>
-                    <th>Est. Wait</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (locals.jobs && jobs.length > 0) { %>
-                    <% jobs.forEach((job, index) => { %>
-                        <tr class="<%= job.priority === 1 ? 'vip-row' : '' %>">
-                            <td><b>#<%= index + 1 %></b></td>
-                            <td>
-                                <%= job.customerName %>
-                                <% if (job.priority === 1) { %> <span class="badge-vip">VIP</span> <% } %>
-                            </td>
-                            <td><%= job.quantity %>x <%= job.foodName %></td>
-                            <td>~<%= Math.min(job.processingTime * job.quantity, 10) %> mins</td>
-                            <td><span class="badge-wait"><%= job.status %></span></td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr><td colspan="5" style="text-align:center; color:#777; padding:30px;">Kitchen is currently clear. No active orders.</td></tr>
-                <% } %>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Customer Name</th>
+                        <th>Meal Item</th>
+                        <th>Est. Wait</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (locals.jobs && jobs.length > 0) { %>
+                        <% jobs.forEach((job, index) => { %>
+                            <tr class="<%= job.priority === 1 ? 'vip-row' : '' %>">
+                                <td><b>#<%= index + 1 %></b></td>
+                                <td>
+                                    <%= job.customerName %>
+                                    <% if (job.priority === 1) { %> <span class="badge-vip">VIP</span> <% } %>
+                                </td>
+                                <td><%= job.quantity %>x <%= job.foodName %></td>
+                                <td>~<%= Math.min(job.processingTime * job.quantity, 10) %> mins</td>
+                                <td><span class="badge-wait"><%= job.status %></span></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr><td colspan="5" style="text-align:center; color:#777; padding:30px;">Kitchen is currently clear. No active orders.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
@@ -633,6 +765,13 @@
             window.location.reload();
         }
     });
+
+    function toggleSidebarDrawer() {
+        const sidebar = document.getElementById('customerSidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+        sidebar.classList.toggle('open');
+        backdrop.classList.toggle('active');
+    }
 
     function toggleMenuAccordion() {
         const container = document.getElementById('mealCollapseContainer');
@@ -682,6 +821,14 @@
         } else {
             const targetBtn = Array.from(navButtons).find(btn => btn.getAttribute('onclick').includes(tabId));
             if (targetBtn) targetBtn.classList.add('active');
+        }
+
+        // Close mobile drawer on tab switch
+        const sidebar = document.getElementById('customerSidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+        if (sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            backdrop.classList.remove('active');
         }
     }
 
