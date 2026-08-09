@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OGITECH | Client Job Scheduling Terminal</title>
+    <title>OGITECH CampusBite | Order Terminal</title>
     
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e67e22'%3E%3Cpath d='M11 2v20H9v-2H7v-2H5v-2H3v-2H1v-2h22v2h-2v2h-2v2h-2v2h-2V2h-2zm2 5h4v2h-4zm0 4h4v2h-4zm-8 4h14v2H5zm0 4h14v2H5z'/%3E%3Cpolygon points='12,2 10,5 14,5' fill='%23d4af37'/%3E%3C/svg%3E">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,600;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script src="/socket.io/socket.io.js"></script>
 
     <style>
-        /* Universal Premium Design Variable Tokens */
         :root {
-            --bg-master: #0a0a0c;
+            --bg-master: #ffffff;
             --bg-surface: #141419;
             --bg-surface-elevated: #1d1d26;
             --accent-primary: #E63946; 
@@ -25,309 +24,537 @@
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --border-glow: #2a2a35;
-            --shadow-premium: 0 20px 40px rgba(0,0,0,0.6);
+            --shadow-premium: 0 10px 30px rgba(0,0,0,0.5);
         }
-
-        html { scroll-behavior: smooth; }
 
         body { 
             font-family: 'Poppins', sans-serif; 
             margin: 0; 
-            padding: 0;
             background-color: var(--bg-master); 
             color: var(--text-main); 
-            padding-bottom: 90px; 
-            overflow-x: hidden;
+            display: flex; 
+            min-height: 100vh;
         }
 
-        .academic-terminal-header {
-            background: var(--bg-surface);
-            padding: 55px 20px 40px 20px;
+        .app-sidebar { 
+            width: 300px; 
+            background: var(--bg-surface); 
+            padding: 25px 20px; 
+            border-right: 1px solid var(--border-glow); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 50;
+        }
+
+        .brand-header {
             text-align: center;
+            padding-bottom: 20px;
             border-bottom: 1px solid var(--border-glow);
+            margin-bottom: 10px;
         }
 
-        .academic-terminal-header h1 {
-            color: rgba(255, 255, 255, 0.95);
-            font-size: 2.3rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 0 0 6px 0;
-            line-height: 1.2;
-        }
-
-        .academic-terminal-header span.sub-title {
-            color: var(--accent-primary);
-            text-transform: uppercase;
-            font-size: 1.1rem;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            display: block;
-            margin-bottom: 18px;
-        }
-
-        .academic-terminal-header p {
-            color: var(--text-muted);
-            max-width: 720px;
-            margin: 0 auto;
-            font-size: 0.95rem;
-            font-weight: 300;
-            line-height: 1.6;
-        }
-
-        /* PREMIUM DYNAMIC CIRCULAR TOP BADGES BAR */
-        .badge-nav-panel {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin: -25px auto 25px auto;
-            position: relative;
-            z-index: 10;
-            max-width: 600px;
-            padding: 0 20px;
-        }
-        .badge-circle-pill {
-            background: #1c1c24;
-            border: 2px solid var(--border-glow);
+        .brand-header h2 {
+            margin: 0;
             color: #fff;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .badge-circle-pill:hover {
-            border-color: var(--accent-primary);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(230, 57, 70, 0.25);
-        }
-        .badge-circle-pill.active-badge {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4);
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1px;
         }
 
-        /* COLLAPSIBLE VISIBILITY WRAPPERS */
-        .collapsible-view-block {
-            display: none;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: var(--shadow-premium);
-            animation: fadeInDown 0.35s ease;
+        .brand-header span {
+            color: var(--accent-primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
         }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-15px); }
+
+        .nav-link-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px 16px;
+            color: var(--text-muted);
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid transparent;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-link-btn:hover {
+            background: var(--bg-surface-elevated);
+            color: #fff;
+        }
+
+        .nav-link-btn.active {
+            background: rgba(230, 57, 70, 0.1);
+            color: var(--accent-primary);
+            border-color: rgba(230, 57, 70, 0.3);
+        }
+
+        .main-wrapper { 
+            margin-left: 300px; 
+            flex: 1; 
+            padding: 40px; 
+            box-sizing: border-box;
+            max-width: calc(100% - 300px);
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .interactive-terminal {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 20px 30px 40px 30px;
+        h3 { 
+            border-left: 4px solid var(--accent-primary); 
+            padding-left: 12px; 
+            color: #fff; 
+            margin-top: 0; 
+            margin-bottom: 25px; 
+            font-weight: 700; 
+            font-size: 1.4rem; 
         }
 
-        .row { display: flex; gap: 30px; flex-wrap: wrap; }
-        .col-main { flex: 1; min-width: 350px; background: var(--bg-surface); padding: 35px; border-radius: 16px; border: 1px solid var(--border-glow); height: fit-content; box-shadow: var(--shadow-premium); }
-        
-        h3 { border-left: 4px solid #3498db; padding-left: 12px; color: #3498db; margin-top: 0; margin-bottom: 25px; font-weight: 600; font-size: 1.2rem; letter-spacing: 0.5px; }
-        label { font-weight: 500; display: block; margin-top: 20px; color: #bdc3c7; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
-        
-        input, select, button { padding: 14px; margin: 8px 0; width: 100%; box-sizing: border-box; border: 1px solid var(--border-glow); border-radius: 8px; font-size: 14px; background: var(--bg-master); color: #fff; font-family: 'Poppins', sans-serif; transition: all 0.3s ease; }
-        input:focus, select:focus { border-color: var(--accent-primary); outline: none; background-color: var(--bg-surface-elevated); }
-        
-        button[type="submit"].order-dispatch-btn { 
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover)); 
-            color: white; 
-            border: none; 
-            font-weight: 600; 
-            cursor: pointer; 
-            margin-top: 20px; 
+        .algo-infobar { 
+            background: rgba(52, 152, 219, 0.05); 
+            border: 1px solid rgba(52, 152, 219, 0.15); 
+            padding: 10px 16px; 
+            border-radius: 8px; 
+            margin-bottom: 25px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-left: 4px solid #3498db; 
+        }
+        .algo-title { font-size: 12px; font-weight: 500; text-transform: uppercase; color: #3498db; margin: 0; }
+
+        .form-section-title {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 12px rgba(230, 57, 70, 0.2);
+            letter-spacing: 0.5px;
+            margin: 25px 0 10px 0;
+            display: block;
         }
 
-        .receipt-wrapper { background: #fff; border: 1px solid #999; box-shadow: 0 10px 25px rgba(0,0,0,0.5); padding: 22px; width: 100%; max-width: 300px; margin: 0 auto 20px auto; font-family: 'Courier New', Courier, monospace; color: #000; text-align: center; border-radius: 4px; }
-        .receipt-line { border-top: 1px dashed #000; margin: 14px 0; }
-        .btn-print { background-color: #2c3e50; color: white; margin-bottom: 25px; width: 100%; max-width: 344px; display: block; margin-left: auto; margin-right: auto; font-weight: 500; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid var(--border-glow); padding: 14px 12px; text-align: left; font-size: 13px; }
-        th { background-color: var(--bg-master); color: var(--accent-primary); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
-        
-        .badge-wait { background: #d35400; color: white; padding: 4px 10px; border-radius: 4px; font-weight: 600; font-size: 11px; text-transform: uppercase; }
-        .badge-vip { background: #9b59b6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-        
-        .search-box { background: rgba(155, 89, 182, 0.02); border: 1px dashed #9b59b6; padding: 10px 0 0 0; border-radius: 0; }
-        .status-box { background: #1d3828; color: #2ecc71; padding: 18px; border-radius: 8px; margin-top: 15px; border-left: 5px solid #2ecc71; line-height: 1.6; font-size: 13.5px; text-align: left; }
-        
-        /* FOOTER POSITIONING OF SYSTEM INFO AND OPTIMIZED BUTTON */
-        .bottom-info-deck {
-            max-width: 1300px;
-            margin: 30px auto 0 auto;
-            padding: 0 30px;
+        .accordion-btn {
+            width: 100%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glow);
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
+            transition: all 0.2s ease;
         }
-        .hours-badge { background: var(--bg-surface); border: 1px solid var(--border-glow); border-left: 5px solid var(--accent-primary); padding: 15px 25px; border-radius: 12px; color: #bdc3c7; font-size: 13px; flex: 1; min-width: 280px; }
-        
-        .footer-interactive-trigger { 
-            position: fixed; 
-            bottom: 20px; 
-            right: 25px; 
-            z-index: 1000;
-        }
-        /* Optimized Small and Elegant Floating Help Trigger */
-        .footer-bot-btn { background: #a855f7; color: #fff; border: none; padding: 10px 18px; border-radius: 30px; font-weight: 600; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35); transition: transform 0.2s ease, background 0.2s; width: auto; margin: 0; }
-        .footer-bot-btn:hover { transform: translateY(-2px); background: #c084fc; }
 
-        .live-chat-panel {
-            position: fixed;
-            bottom: 75px;
-            right: 25px;
-            width: 340px;
-            height: 460px;
-            background: #141419;
-            border: 1px solid #2a2a35;
-            border-radius: 16px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.7);
-            z-index: 1001;
-            display: none; 
-            flex-direction: column;
+        .accordion-btn:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-surface-elevated);
+        }
+
+        .accordion-icon {
+            transition: transform 0.3s ease;
+            font-size: 14px;
+            color: var(--accent-primary);
+        }
+
+        .accordion-btn.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .meal-collapse-wrapper {
+            max-height: 0;
             overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+            margin-top: 10px;
+        }
+
+        .meal-collapse-wrapper.open {
+            max-height: 1200px;
+            transition: max-height 0.5s ease-in-out;
+            overflow-y: auto;
+            padding-bottom: 10px;
+        }
+
+        .selected-summary-box {
+            display: none;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid #2ecc71;
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-top: 12px;
+            color: #2ecc71;
+            font-weight: 600;
+            font-size: 14px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .meal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            padding-top: 5px;
+        }
+
+        .meal-radio { display: none; }
+        
+        .meal-card {
+            background: var(--bg-surface);
+            border: 2px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            height: 100%;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .meal-card:hover {
+            border-color: #555;
+            transform: translateY(-2px);
+        }
+
+        .meal-radio:checked + .meal-card {
+            border-color: var(--accent-primary);
+            background: rgba(230, 57, 70, 0.08);
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.2);
+        }
+
+        .meal-img-box {
+            width: 100%;
+            height: 130px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #202028;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .meal-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .meal-icon-fallback { font-size: 40px; }
+
+        .meal-name { font-size: 14px; font-weight: 700; color: #fff; margin: 0 0 6px 0; line-height: 1.3; }
+        .meal-price { font-size: 16px; font-weight: 700; color: var(--accent-primary); margin: 0; }
+        .meal-prep { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+
+        .input-row { display: flex; gap: 20px; margin-bottom: 20px; }
+        .input-group { flex: 1; }
+        
+        input[type="text"], input[type="email"], select { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1px solid var(--border-glow); 
+            border-radius: 8px; 
+            font-size: 14px; 
+            background: var(--bg-surface); 
+            color: #fff; 
+            font-family: 'Poppins', sans-serif; 
+            box-sizing: border-box;
+            transition: border-color 0.2s;
         }
         
-        .chat-header { background: #a855f7; padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; }
-        .chat-header h4 { margin: 0; font-size: 14px; font-weight: 700; color: #fff; }
-        .chat-close-btn { background: transparent; border: none; color: #fff; font-size: 20px; cursor: pointer; width: auto; padding: 0; margin: 0; }
-        
-        .chat-channels-box { background: #1d1d26; padding: 12px; border-bottom: 1px solid #2a2a35; }
-        .chat-channels-box p { margin: 0 0 8px 0; font-size: 10px; font-weight: 600; text-transform: uppercase; color: #a1a1aa; letter-spacing: 0.5px; }
-        .channel-link { display: flex; align-items: center; gap: 8px; color: #38bdf8; text-decoration: none; font-size: 12px; margin-bottom: 6px; padding: 5px 8px; background: #141419; border-radius: 6px; border: 1px solid #2a2a35; }
+        input:focus, select:focus { border-color: var(--accent-primary); outline: none; }
 
+        .payment-notice {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px dashed #2ecc71;
+            color: #2ecc71;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .error-alert {
+            background: rgba(230, 57, 70, 0.15);
+            border: 1px solid var(--accent-primary);
+            color: #ff8080;
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .order-dispatch-btn { 
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-hover)); 
+            color: white; 
+            border: none; 
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700; 
+            cursor: pointer; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+            transition: transform 0.2s;
+        }
+        .order-dispatch-btn:hover { transform: translateY(-2px); }
+        .order-dispatch-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: var(--bg-surface); border-radius: 8px; overflow: hidden; }
+        th, td { border-bottom: 1px solid var(--border-glow); padding: 16px; text-align: left; font-size: 14px; }
+        th { background-color: var(--bg-surface-elevated); color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        tr:last-child td { border-bottom: none; }
+        
+        .badge-wait { background: #d35400; color: white; padding: 4px 10px; border-radius: 4px; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+        .badge-vip { background: #9b59b6; color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .vip-row { border-left: 4px solid #9b59b6; background-color: rgba(155, 89, 182, 0.05); }
+
+        .search-box form { display: flex; gap: 10px; margin-bottom: 25px; }
+        .search-box button { background: #9b59b6; color: white; border: none; padding: 0 25px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .status-box { background: #1d3828; color: #2ecc71; padding: 20px; border-radius: 8px; border-left: 5px solid #2ecc71; line-height: 1.6; font-size: 14px; }
+
+        .receipt-wrapper { background: #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.2); padding: 25px; width: 100%; max-width: 320px; margin: 0 auto 30px auto; font-family: 'Courier New', Courier, monospace; color: #000; text-align: center; border-radius: 8px; border-top: 6px solid var(--accent-primary); }
+        .receipt-line { border-top: 1px dashed #ccc; margin: 15px 0; }
+        .btn-print { background-color: #2c3e50; color: white; padding: 12px; border: none; border-radius: 8px; margin-bottom: 25px; width: 100%; max-width: 370px; display: block; margin-left: auto; margin-right: auto; font-weight: 600; cursor: pointer; }
+
+        .footer-bot-btn { position: fixed; bottom: 25px; right: 25px; background: #a855f7; color: #fff; border: none; padding: 12px 20px; border-radius: 30px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35); z-index: 1000; }
+        .live-chat-panel { position: fixed; bottom: 85px; right: 25px; width: 350px; height: 480px; background: #141419; border: 1px solid #2a2a35; border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.7); z-index: 1001; display: none; flex-direction: column; overflow: hidden; }
+        .chat-header { background: #a855f7; padding: 15px; display: flex; justify-content: space-between; align-items: center; color: white; font-weight: 700; }
+        .chat-close-btn { background: transparent; border: none; color: white; font-size: 20px; cursor: pointer; }
         .chat-message-area { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0a0a0c; }
         .msg-bubble { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
         .msg-bot { background: #27272a; color: #f4f4f5; align-self: flex-start; border-bottom-left-radius: 2px; }
         .msg-user { background: #a855f7; color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
-
-        .chat-input-row { padding: 10px 15px; background: #141419; border-top: 1px solid #2a2a35; display: flex; gap: 8px; align-items: center; }
-        .chat-input-row input { margin: 0; padding: 10px; background: #0a0a0c; border: 1px solid #2a2a35; font-size: 13px; flex: 1; }
-        .chat-send-btn { background: #a855f7; color: white; width: auto; margin: 0; padding: 10px 16px; font-weight: 600; font-size: 13px; border: none; cursor: pointer; }
-
-        .vip-row { border-left: 4px solid #9b59b6; background-color: #1a0f21 !important; }
-        .algo-infobar { background: rgba(52, 152, 219, 0.05); border: 1px solid rgba(52, 152, 219, 0.15); padding: 10px 16px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; border-left: 4px solid #3498db; }
-        .algo-title { font-size: 12px; font-weight: 500; text-transform: uppercase; color: #3498db; margin: 0; }
+        .chat-input-row { padding: 10px; background: #141419; border-top: 1px solid #2a2a35; display: flex; gap: 8px; }
+        .chat-input-row input { flex: 1; padding: 10px; background: #0a0a0c; border: 1px solid #2a2a35; color: white; border-radius: 6px; }
+        .chat-send-btn { background: #a855f7; color: white; border: none; padding: 0 15px; border-radius: 6px; cursor: pointer; font-weight: 600; }
 
         @media print {
             body * { visibility: hidden; }
             #targetReceiptPrintOut, #targetReceiptPrintOut * { visibility: visible; }
-            #targetReceiptPrintOut { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 100%; scale: 1.4; }
+            #targetReceiptPrintOut { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 100%; scale: 1.2; box-shadow: none; }
         }
     </style>
 </head>
 <body>
 
-<header class="academic-terminal-header">
-    <h1>OGITECH Scheduling Core Terminal</h1>
-    <span class="sub-title">Customer Self-Service Terminal</span>
-    <p>Input your job parameters below. The scheduling matrix automatically calculates the resource processing time and groups payloads using optimal queue configurations.</p>
-</header>
-
-<!-- Circular Badges Bar Component -->
-<nav class="badge-nav-panel">
-    <button id="queueBadge" onclick="toggleSection('kitchenQueueBlock', 'queueBadge')" class="badge-circle-pill">
-        🍳 Core Kitchen Queue Status
-    </button>
-    <button id="trackerBadge" onclick="toggleSection('orderTrackerBlock', 'trackerBadge')" class="badge-circle-pill">
-        🔎 Order Status Tracker
-    </button>
-</nav>
-
-<main id="order-terminal" class="interactive-terminal">
-    
-    <!-- Hidden Dropdown Section 1: Core Kitchen Queue Status -->
-    <div id="kitchenQueueBlock" class="collapsible-view-block">
-        <h3 style="border-left-color: var(--accent-primary); color: var(--accent-primary); margin-bottom: 12px;">Live Kitchen Queue Status Map</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Queue Rank</th>
-                    <th>Customer Name</th>
-                    <th>Meal Item</th>
-                    <th>Est Time</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (locals.jobs && jobs.length > 0) { %>
-                    <% jobs.forEach((job, index) => { %>
-                        <tr class="<%= job.priority === 1 ? 'vip-row' : '' %>">
-                            <td><b>#<%= index + 1 %></b></td>
-                            <td>
-                                <%= job.customerName %>
-                                <% if (job.priority === 1) { %>
-                                    <span class="badge-vip">VIP</span>
-                                <% } %>
-                            </td>
-                            <td><%= job.quantity %>x <%= job.foodName %></td>
-                            <td><%= Math.min(job.processingTime * job.quantity, 10) %> mins</td>
-                            <td><span class="badge-wait"><%= job.status %></span></td>
-                        </tr>
-                    <% }) %>
-                <% } else { %>
-                    <tr><td colspan="5" style="text-align:center; color:#777; padding:20px;">No active orders currently cooking inside the kitchen.</td></tr>
-                <% } %>
-            </tbody>
-        </table>
+<div class="app-sidebar">
+    <div class="brand-header">
+        <h2>OGITECH</h2>
+        <span>Food Express Terminal</span>
     </div>
 
-    <!-- Hidden Dropdown Section 2: Personal Order Status Tracker -->
-    <div id="orderTrackerBlock" class="collapsible-view-block" style="background: var(--bg-surface);">
-        <div class="search-box">
-            <h3 style="margin-top:0; border-left-color: #9b59b6; color: #9b59b6;">🔎 Personal Order Status Tracker</h3>
-            <p style="margin: 0 0 12px 0; font-size:12px; color:var(--text-muted);">Type your unique alphanumeric code below:</p>
+    <button class="nav-link-btn active" onclick="switchTab(event, 'placeOrderTab')">
+        🛒 Place Food Order
+    </button>
+    <button class="nav-link-btn" onclick="switchTab(event, 'orderTrackerTab')">
+        🔎 Order Status Tracker
+    </button>
+    <button class="nav-link-btn" onclick="switchTab(event, 'kitchenQueueTab')">
+        🍳 Kitchen Queue Status
+    </button>
+
+    <div style="margin-top: auto; padding: 15px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border-glow);">
+        <p style="margin: 0 0 5px 0; font-size: 12px; color: var(--text-muted); font-weight: 600;">🕒 Operating Hours</p>
+        <p style="margin: 0; font-size: 12px; color: #fff;">Mon-Sat | 8:00 AM – 8:00 PM</p>
+    </div>
+</div>
+
+<div class="main-wrapper" id="order-terminal">
+    
+    <div id="placeOrderTab" class="tab-content active">
+        
+        <% if (locals.successMsg && locals.ticket) { %>
+            <div id="targetReceiptPrintOut" class="receipt-wrapper">
+                <h4 style="margin:0 0 5px 0; font-weight:800; font-size: 18px;">OGITECH CAFE</h4>
+                <small style="font-size:11px; color:#666;">E-Ordering Token System</small>
+                <div class="receipt-line"></div>
+                <p style="font-size:11px; margin:4px 0; color:#555; font-weight: bold;">UNIQUE TRACKING CODE</p>
+                <p style="font-size: 26px; font-weight: 900; margin: 5px 0; color: var(--accent-primary);"><%= ticket.orderId %></p>
+                <div class="receipt-line"></div>
+                
+                <div style="background: #f8fafc; padding: 15px; border: 1px dashed #cbd5e1; border-radius: 6px; margin: 15px 0;">
+                    <p style="margin: 0; font-size: 11px; font-weight: 700; color: #475569;">🔢 LIVE QUEUE PLACEMENT</p>
+                    <p style="margin: 5px 0; font-size: 24px; font-weight: 800; color: #0f172a;">Position #<%= ticket.queuePosition %></p>
+                    <div style="border-top: 1px dashed #cbd5e1; margin: 10px 0;"></div>
+                    <p style="margin: 0; font-size: 12px; font-weight: 700; color: #15803d;">⏰ EST. PREP: 10 MINS</p>
+                </div>
+
+                <p style="text-align:left; margin:6px 0; font-size:13px;"><b>Name:</b> <%= ticket.customerName %></p>
+                <p style="text-align:left; margin:6px 0; font-size:13px;"><b>Item:</b> <%= ticket.quantity %>x <%= ticket.foodName %></p>
+                <p style="text-align:left; margin:6px 0; font-size:13px;"><b>Class:</b>
+                    <% if (ticket.priority === 1) { %>
+                        <span style="font-weight:bold; color:#9b59b6;">VIP FAST-TRACK</span>
+                    <% } else { %>
+                        <span style="font-weight:bold; color:#555;">STANDARD</span>
+                    <% } %>
+                </p>
+                
+                <div class="receipt-line"></div>
+                <p style="font-size:16px; margin:4px 0; text-align:right; font-weight:bold;">PAID ONLINE: ₦<%= ticket.totalPrice.toLocaleString() %></p>
+                <div class="receipt-line"></div>
+                <p style="font-size: 10px; color: #888;">Present this token at the counter for pickup.</p>
+            </div>
+            <button onclick="window.print();" class="btn-print">🖨 Print Digital Receipt</button>
+        <% } %>
+
+        <% if (locals.error) { %>
+            <div class="error-alert">
+                ⚠️ <span>An error occurred with payment processing (<%= locals.error %>). Please check your connection and details, then try again.</span>
+            </div>
+        <% } %>
+
+        <div class="algo-infobar">
+            <span class="algo-title">🤖 Active Kitchen Optimizer Mode:</span>
+            <span style="background: #E63946; color: #fff; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 20px; text-transform: uppercase;">
+                <%= locals.algo === 'sjf' ? 'Shortest Job First (SJF)' : 'First-In, First-Out (FIFO)' %>
+            </span>
+        </div>
+
+        <h3>🛒 Build Your Order</h3>
+        
+        <form action="/place-order" method="POST" id="premiumOrderForm">
+            <span class="form-section-title">1. Your Details</span>
+            <div class="input-row">
+                <div class="input-group">
+                    <input type="text" name="customerName" placeholder="Enter your first name" required>
+                </div>
+                <div class="input-group">
+                    <input type="email" name="customerEmail" placeholder="Email Address (For e-receipt)" required>
+                </div>
+            </div>
+
+            <span class="form-section-title">2. Select Your Meal</span>
             
-            <form action="/order" method="GET" style="display: flex; gap: 8px; max-width: 500px;">
-                <input type="text" name="searchId" placeholder="e.g., OGI-X8W2" value="<%= locals.searchQuery || '' %>" style="margin:0; flex: 2; background:var(--bg-master);" required>
-                <button type="submit" style="margin:0; flex: 1; background-color: #9b59b6; padding:0; font-weight:600; cursor:pointer;">Track Token</button>
+            <button type="button" class="accordion-btn" id="toggleMenuBtn" onclick="toggleMenuAccordion()">
+                <span id="accordionLabel">▼ Click here to open available meal menu</span>
+                <span class="accordion-icon">▼</span>
+            </button>
+
+            <div id="selectedSummary" class="selected-summary-box">
+                <span>Selected: <strong id="summaryDishName" style="color:#fff;">-</strong></span>
+                <span id="summaryDishPrice" style="color:var(--accent-gold); font-weight:700;">₦0</span>
+            </div>
+
+            <div id="mealCollapseContainer" class="meal-collapse-wrapper">
+                <div class="meal-grid">
+                    <% if (locals.menu && menu.length > 0) { %>
+                        <% menu.forEach((dish, index) => { %>
+                            <label>
+                                <input type="radio" name="foodId" value="<%= dish._id %>" class="meal-radio" required data-name="<%= dish.name %>" data-price="<%= dish.price %>" onchange="handleMealSelection(this)">
+                                <div class="meal-card">
+                                    <div class="meal-img-box">
+                                        <% if (dish.imageUrl || dish.image) { %>
+                                            <img src="<%= dish.imageUrl || dish.image %>" alt="<%= dish.name %>" loading="lazy">
+                                        <% } else { %>
+                                            <div class="meal-icon-fallback">🍱</div>
+                                        <% } %>
+                                    </div>
+                                    <h4 class="meal-name"><%= dish.name %></h4>
+                                    <p class="meal-price">₦<%= dish.price.toLocaleString() %></p>
+                                    <p class="meal-prep">Est. Prep: 10-15 mins</p>
+                                </div>
+                            </label>
+                        <% }) %>
+                    <% } else { %>
+                        <p style="color: #888; padding: 20px;">No menu items available currently.</p>
+                    <% } %>
+                </div>
+            </div>
+
+            <span class="form-section-title" id="step3Target" style="scroll-margin-top: 30px;">3. Order Configuration</span>
+            <div class="input-row">
+                <div class="input-group">
+                    <select name="quantity" id="quantity">
+                        <option value="1">1 Plate (Single)</option>
+                        <option value="2">2 Plates (Double)</option>
+                        <option value="3">3 Plates</option>
+                        <option value="4">4 Plates</option>
+                        <option value="5">5 Plates (Family)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <select name="priority" id="priority">
+                        <option value="0">Standard Queue (Regular Base Price)</option>
+                        <option value="1">VIP Fast-Track (+₦500 Priority Processing)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="payment-notice">
+                🔒 <b>STRICTLY ONLINE PAYMENT:</b> Cashless transaction. Your order dispatches directly to the kitchen once online payment is processed.
+            </div>
+
+            <button type="submit" class="order-dispatch-btn" id="submitBtn">
+                <span id="btnText">💳 Pay Online & Place Order</span>
+            </button>
+        </form>
+    </div>
+
+    <div id="orderTrackerTab" class="tab-content">
+        <h3>🔎 Personal Order Status Tracker</h3>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Enter the unique tracking code from your digital receipt to check your meal's live progress.</p>
+        
+        <div class="search-box">
+            <form action="/order" method="GET">
+                <input type="text" name="searchId" placeholder="e.g., OGI-X8W2" value="<%= locals.searchQuery || '' %>" required>
+                <button type="submit">Track Token</button>
             </form>
 
             <% if (locals.searchResult) { %>
                 <% if (searchResult.status === 'Preparing') { %>
-                    <div class="status-box" style="background: #342609; border-left-color: #ffc107; color: #ffc107;">
-                        ⏳ <b>Ticket Found: <%= searchResult.orderId %></b><br>
-                        <b>Queue Place Rank:</b> Position #<%= searchResult.queuePosition %><br>
-                        <b>Est. Countdown:</b> Ready in approx. 10 Mins (<%= searchResult.estimatedTime %>)<br>
-                        <b>Status:</b> Kitchen is preparing your meal. Please wait!
+                    <div class="status-box" style="background: #342609; border-left-color: #f1c40f; color: #f1c40f;">
+                        ⏳ <b>TICKET FOUND: <%= searchResult.orderId %></b><br><br>
+                        <b>Queue Rank:</b> Position #<%= searchResult.queuePosition %><br>
+                        <b>Est. Ready Time:</b> <%= searchResult.estimatedTime %><br>
+                        <b>Status:</b> Kitchen is actively preparing your meal.
                     </div>
                 <% } else if (searchResult.status === 'Ready for Pickup') { %>
                     <div class="status-box">
-                        🎉 <b>🟢 MEAL READY FOR PICKUP</b><br>
+                        🎉 <b>🟢 MEAL READY FOR PICKUP</b><br><br>
                         <b>Ticket:</b> <%= searchResult.orderId %><br>
                         <b>Details:</b> <%= searchResult.quantity %>x <%= searchResult.foodName %><br>
-                        <p style="font-size:12px; margin:10px 0 0 0; color:#ff6b6b; font-weight:bold; border-top:1px dashed #2ecc71; padding-top:10px;">
-                            👉 Please proceed to the kitchen counter, present this Order ID to the staff, make your cash payment of ₦<%= searchResult.totalPrice.toLocaleString() %>, and collect your meal plate!
+                        <p style="margin:10px 0 0 0; color:#fff; border-top:1px dashed #2ecc71; padding-top:10px;">
+                            👉 Please proceed to the kitchen counter and present your Order ID to collect your meal plate! (Payment verified).
                         </p>
                     </div>
                 <% } else if (searchResult.status === 'Collected') { %>
-                    <div class="status-box" style="background: var(--bg-master); border-left-color: #6c757d; color: #aaa;">
-                        ✅ <b>ORDER DISPATCHED & COLLECTED</b><br>
+                    <div class="status-box" style="background: var(--bg-surface-elevated); border-left-color: #6c757d; color: #aaa;">
+                        ✅ <b>ORDER COLLECTED</b><br><br>
                         <b>Ticket Code:</b> <%= searchResult.orderId %><br>
-                        <b>Log Status:</b> Payment Confirmed. Handed over to client. Thank you for dining with OGITECH Restaurant!
+                        <b>Log Status:</b> Handed over to client. Thank you for dining with OGITECH Food Express!
                     </div>
                 <% } %>
             <% } else if (locals.searchQuery && locals.searchError) { %>
@@ -338,118 +565,54 @@
         </div>
     </div>
 
-    <!-- Main View Form Layer -->
-    <div class="algo-infobar">
-        <p class="algo-title">🤖 Active Algorithmic Optimizer Mode:</p>
-        <span style="background: #E63946; color: #fff; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 20px; text-transform: uppercase;">
-            <%= locals.algo === 'sjf' ? 'Shortest Job First (SJF)' : 'First-In, First-Out (FIFO)' %>
-        </span>
+    <div id="kitchenQueueTab" class="tab-content">
+        <h3>🍳 Live Kitchen Queue Status</h3>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Public view of active orders currently being processed by the kitchen algorithm.</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Customer Name</th>
+                    <th>Meal Item</th>
+                    <th>Est. Wait</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (locals.jobs && jobs.length > 0) { %>
+                    <% jobs.forEach((job, index) => { %>
+                        <tr class="<%= job.priority === 1 ? 'vip-row' : '' %>">
+                            <td><b>#<%= index + 1 %></b></td>
+                            <td>
+                                <%= job.customerName %>
+                                <% if (job.priority === 1) { %> <span class="badge-vip">VIP</span> <% } %>
+                            </td>
+                            <td><%= job.quantity %>x <%= job.foodName %></td>
+                            <td>~<%= Math.min(job.processingTime * job.quantity, 10) %> mins</td>
+                            <td><span class="badge-wait"><%= job.status %></span></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="5" style="text-align:center; color:#777; padding:30px;">Kitchen is currently clear. No active orders.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
     </div>
 
-    <div class="row">
-        <div class="col-main">
-            <h3>Place Food Order Terminal</h3>
-            
-            <% if (locals.successMsg && locals.ticket) { %>
-                <div id="targetReceiptPrintOut" class="receipt-wrapper">
-                    <h4 style="margin:0 0 5px 0; font-weight:bold; letter-spacing:1px;">OGITECH CAFE</h4>
-                    <small style="font-size:11px;">E-Ordering Token System</small>
-                    <div class="receipt-line"></div>
-                    <p style="font-size:11px; margin:4px 0; color:#555;">UNIQUE TRACKING CODE</p>
-                    <p style="font-size: 30px; font-weight: bold; margin: 6px 0; letter-spacing: 1px;"><%= ticket.orderId %></p>
-                    <div class="receipt-line"></div>
-                    
-                    <div style="background: #fdf2f2; padding: 12px; border: 1px dashed #f5c2c2; border-radius: 6px; margin: 12px 0; text-align: center;">
-                        <p style="margin: 0; font-size: 11px; font-weight: 700; color: #7f1d1d; letter-spacing: 0.5px;">🔢 LIVE QUEUE PLACEMENT</p>
-                        <p style="margin: 4px 0; font-size: 22px; font-weight: 800; color: var(--accent-primary);">Position #<%= ticket.queuePosition %></p>
-                        <div style="border-top: 1px dashed #f5c2c2; margin: 8px 0;"></div>
-                        <p style="margin: 0; font-size: 12px; font-weight: 700; color: #15803d;">⏰ MEAL READY IN: 10 MINS</p>
-                        <p style="margin: 4px 0 0 0; font-size: 11px; color: #4b5563;">Est. Handover Counter Clock: <%= ticket.estimatedTime %></p>
-                    </div>
-
-                    <p style="text-align:left; margin:5px 0; font-size:12px;"><b>Client Name:</b> <%= ticket.customerName %></p>
-                    <p style="text-align:left; margin:5px 0; font-size:12px;"><b>Meal Combo:</b> <%= ticket.quantity %>x <%= ticket.foodName %></p>
-                    <p style="text-align:left; margin:5px 0; font-size:12px;"><b>Queue Class:</b>
-                        <% if (ticket.priority === 1) { %>
-                            <span class="badge-vip" style="font-weight:bold;">👑 VIP FAST-TRACK (+₦500)</span>
-                        <% } else { %>
-                            <span style="font-weight:bold; color:#555;">STANDARD DINING</span>
-                        <% } %>
-                    </p>
-                    
-                    <div class="receipt-line"></div>
-                    <p style="font-size:16px; margin:4px 0; text-align:right; font-weight:bold;">TOTAL DUE: ₦<%= ticket.totalPrice.toLocaleString() %></p>
-                    <div class="receipt-line"></div>
-                </div>
-                <button onclick="window.print();" class="btn-print">🖨 Download / Print Digital Receipt</button>
-            <% } %>
-
-            <form action="/place-order" method="POST" id="premiumOrderForm">
-                <label>Your Name:</label>
-                <input type="text" name="customerName" placeholder="Enter your first name" required>
-
-                <label>Your Email Address:</label>
-                <input type="email" name="customerEmail" placeholder="e.g., name@gmail.com" required>
-
-                <label>Select Your Desired Meal Combo Menu:</label>
-                <select name="foodId">
-                    <% if (locals.menu) { %>
-                        <% menu.forEach(dish => { %>
-                            <option value="<%= dish.id %>"><%= dish.name %> (₦<%= dish.price.toLocaleString() %>)</option>
-                        <% }) %>
-                    <% } %>
-                </select>
-
-                <label>Number of Plates:</label>
-                <select name="quantity">
-                    <option value="1">1 Plate</option>
-                    <option value="2">2 Plates</option>
-                    <option value="3">3 Plates</option>
-                    <option value="4">4 Plates</option>
-                    <option value="5">5 Plates</option>
-                </select>
-
-                <label>Service Priority Level:</label>
-                <select name="priority">
-                    <option value="0">Standard Ordering Queue (Regular Base Price)</option>
-                    <option value="1">VIP / Fast-Track Dining (+₦500 Speed Premium)</option>
-                </select>
-
-                <button type="submit" class="order-dispatch-btn" id="submitBtn">
-                    <span id="btnText">Send Order to Kitchen</span>
-                    <div class="spinner-inline" id="btnSpinner"></div>
-                </button>
-            </form>
-        </div>
-    </div>
-</main>
-
-<div class="bottom-info-deck">
-    <div class="hours-badge">
-        <h4 style="margin: 0 0 6px 0; color: #E63946; font-size: 14px; font-weight: 600;">🕒 Official Operating Hours</h4>
-        <span style="font-size: 12px; display:block;"><b>Days Open:</b> Monday to Saturday | <b>Service Period:</b> 8:00 AM – 8:00 PM</span>
-    </div>
 </div>
 
-<div class="footer-interactive-trigger">
-    <button onclick="toggleChatWindow()" class="footer-bot-btn">💬 Need Help?</button>
-</div>
+<button onclick="toggleChatWindow()" class="footer-bot-btn">💬 Help / Support</button>
 
 <div id="liveChatWidgetPanel" class="live-chat-panel">
     <div class="chat-header">
-        <h4>🤖 OGITECH Support Hub</h4>
+        <span>🤖 OGITECH Support Hub</span>
         <button onclick="toggleChatWindow()" class="chat-close-btn">&times;</button>
     </div>
     
-    <div class="chat-channels-box">
-        <p>Direct Hotlines:</p>
-        <a href="tel:+2347026852515" class="channel-link">📞 Call Support: +234 702 685 2515</a>
-        <a href="mailto:olotujapheth400@gmail.com" class="channel-link">✉️ Email: olotujapheth400@gmail.com</a>
-    </div>
-
     <div class="chat-message-area" id="chatMsgConsole">
         <div class="msg-bubble msg-bot">
-            Hello! Welcome to OGITECH Automated System Help Desk. How can we assist you with your scheduling order token today?
+            Hello! Welcome to the OGITECH Help Desk. Having trouble with your online payment or tracking your meal?
         </div>
     </div>
 
@@ -459,51 +622,89 @@
     </div>
 </div>
 
+<div id="url-data" data-search="<%= locals.searchQuery ? 'true' : 'false' %>" data-success="<%= locals.successMsg ? 'true' : 'false' %>" style="display:none;"></div>
+
 <script>
     const clientSocket = io();
 
-    clientSocket.on('queueUpdate', (data) => {
-        window.location.reload();
+    clientSocket.on('queueUpdate', () => {
+        const nameInput = document.querySelector('input[name="customerName"]').value;
+        if (!nameInput) {
+            window.location.reload();
+        }
     });
 
-    // Elegant Section Toggling Logic via Circles
-    function toggleSection(blockId, badgeId) {
-        const targetBlock = document.getElementById(blockId);
-        const targetBadge = document.getElementById(badgeId);
-        const isCurrentOpen = targetBlock.style.display === 'block';
+    function toggleMenuAccordion() {
+        const container = document.getElementById('mealCollapseContainer');
+        const btn = document.getElementById('toggleMenuBtn');
+        const label = document.getElementById('accordionLabel');
 
-        // Close all sections and clear active classes
-        document.querySelectorAll('.collapsible-view-block').forEach(block => block.style.display = 'none');
-        document.querySelectorAll('.badge-circle-pill').forEach(badge => badge.classList.remove('active-badge'));
+        container.classList.toggle('open');
+        btn.classList.toggle('active');
 
-        // Toggle open if it was closed
-        if (!isCurrentOpen) {
-            targetBlock.style.display = 'block';
-            targetBadge.classList.add('active-badge');
-            targetBlock.scrollIntoView({ behavior: 'smooth' });
+        if (container.classList.contains('open')) {
+            label.innerText = '▲ Click to close menu dropdown';
+        } else {
+            label.innerText = '▼ Click here to open available meal menu';
+        }
+    }
+
+    function handleMealSelection(radioElement) {
+        const dishName = radioElement.getAttribute('data-name');
+        const dishPrice = parseInt(radioElement.getAttribute('data-price')).toLocaleString();
+
+        document.getElementById('summaryDishName').innerText = dishName;
+        document.getElementById('summaryDishPrice').innerText = '₦' + dishPrice;
+        document.getElementById('selectedSummary').style.display = 'flex';
+
+        document.getElementById('accordionLabel').innerText = '✓ Selected: ' + dishName;
+
+        const container = document.getElementById('mealCollapseContainer');
+        const btn = document.getElementById('toggleMenuBtn');
+        container.classList.remove('open');
+        btn.classList.remove('active');
+
+        setTimeout(() => {
+            document.getElementById('step3Target').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
+    }
+
+    function switchTab(event, tabId) {
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        const navButtons = document.querySelectorAll('.nav-link-btn');
+        navButtons.forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        if (event) {
+            event.currentTarget.classList.add('active');
+        } else {
+            const targetBtn = Array.from(navButtons).find(btn => btn.getAttribute('onclick').includes(tabId));
+            if (targetBtn) targetBtn.classList.add('active');
         }
     }
 
     const form = document.getElementById('premiumOrderForm');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
-    const btnSpinner = document.getElementById('btnSpinner');
 
-    form.addEventListener('submit', function() {
-        form.classList.add('payment-loading-active');
-        submitBtn.disabled = true;
-        btnText.innerText = "Connecting To Secure Banking Gateway...";
-        btnSpinner.style.display = "inline-block";
-    });
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+            submitBtn.style.cursor = 'wait';
+            btnText.innerText = "Connecting to Paystack Gateway...";
+        });
+    }
 
-    // Keep Tracker open if URL contains query search responses
     window.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.has('searchId')) {
-            toggleSection('orderTrackerBlock', 'trackerBadge');
-        } else if (urlParams.has('successMsg')) {
-            const destinationElement = document.getElementById('order-terminal');
-            if (destinationElement) destinationElement.scrollIntoView({ behavior: 'instant' });
+        const routeData = document.getElementById('url-data');
+        if (routeData.dataset.search === 'true') {
+            switchTab(null, 'orderTrackerTab');
+        } else if (routeData.dataset.success === 'true') {
+            switchTab(null, 'placeOrderTab');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
 
@@ -535,12 +736,12 @@
             const botBubble = document.createElement('div');
             botBubble.className = 'msg-bubble msg-bot';
             const upperText = text.toUpperCase();
-            if (upperText.includes('PAY') || upperText.includes('MONEY')) {
-                botBubble.innerText = "If payment fails but you're debited, wait 5 minutes for Paystack or tap the hotlines above to contact us.";
+            if (upperText.includes('PAY') || upperText.includes('MONEY') || upperText.includes('CASH')) {
+                botBubble.innerText = "We strictly process payments online through our secure gateway. Cash is not accepted at the pickup counter.";
             } else if (upperText.includes('MENU') || upperText.includes('FOOD')) {
-                botBubble.innerText = "Select your desired meal combo directly from our menu option dropdown form above.";
+                botBubble.innerText = "Click on '2. Select Your Meal' to drop down and view all current dishes from the admin database!";
             } else {
-                botBubble.innerText = "Query logged. For instant real-time resolution call support lines directly at +234 702 685 2515.";
+                botBubble.innerText = "For urgent assistance, reach our desk directly at +234 702 685 2515.";
             }
             consoleArea.appendChild(botBubble);
             consoleArea.scrollTop = consoleArea.scrollHeight;

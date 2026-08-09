@@ -3,145 +3,341 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OGITECH Restaurant | Automated Food Management System</title>
+    <title>OGITECH CampusBite | Smart Order Management</title>
     
     <!-- Premium Unified Browser Tab Favicon Icon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233498db'%3E%3Cpath d='M11 2v20H9v-2H7v-2H5v-2H3v-2H1v-2h22v2h-2v2h-2v2h-2v2h-2V2h-2zm2 5h4v2h-4zm0 4h4v2h-4zm-8 4h14v2H5zm0 4h14v2H5z'/%3E%3Cpolygon points='12,2 10,5 14,5' fill='%23d4af37'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e67e22'%3E%3Cpath d='M11 2v20H9v-2H7v-2H5v-2H3v-2H1v-2h22v2h-2v2h-2v2h-2v2h-2V2h-2zm2 5h4v2h-4zm0 4h4v2h-4zm-8 4h14v2H5zm0 4h14v2H5z'/%3E%3Cpolygon points='12,2 10,5 14,5' fill='%23d4af37'/%3E%3C/svg%3E">
     
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
+        /* Unified Design Tokens */
         :root {
-            --bg-master: #0a0a0c;
+            --bg-master: #ffffff c;
             --bg-surface: #141419;
-            --crimson: #E63946;
+            --bg-surface-elevated: #1d1d26;
+            --accent-primary: #E63946; 
+            --accent-hover: #d62828;
+            --accent-gold: #d4af37;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --border-glow: #2a2a35;
-            --accent-gold: #d4af37;
         }
-        body { margin: 0; font-family: 'Poppins', sans-serif; background-color: var(--bg-master); color: var(--text-main); line-height: 1.6; }
         
-        /* Premium Background Image Hero with Dark Overlay */
-        .hero { 
-            background: linear-gradient(rgba(10, 10, 12, 0.82), rgba(10, 10, 12, 0.95)), 
-                        url('https://png.pngtree.com/thumb_back/fw800/background/20251008/pngtree-professional-chef-garnishing-dish-in-modern-restaurant-kitchen-image_19804215.webp') no-repeat center center/cover; 
-            padding: 140px 20px; 
-            text-align: center; 
-            border-bottom: 1px solid var(--border-glow); 
+        body { 
+            margin: 0; 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg-master); 
+            color: var(--text-main); 
+            line-height: 1.6; 
+            overflow-x: hidden;
         }
-        .hero h1 { font-family: 'Playfair Display', serif; font-size: 3rem; margin: 0 auto 20px auto; color: #fff; max-width: 950px; line-height: 1.3; text-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-        .hero p { font-size: 1.15rem; max-width: 650px; margin: 0 auto 40px auto; color: #d1d5db; font-weight: 300; }
-        
-        .btn-primary { background-color: var(--crimson); color: white; padding: 18px 45px; text-decoration: none; font-weight: 600; border-radius: 8px; transition: 0.3s; display: inline-block; letter-spacing: 0.5px; text-transform: uppercase; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(230, 57, 70, 0.4); }
-        
-        .section { padding: 80px 20px; max-width: 1100px; margin: 0 auto; text-align: center; }
-        .section h2 { color: var(--crimson); font-size: 2.2rem; margin-bottom: 15px; font-family: 'Playfair Display', serif; }
-        .section-subtitle { color: var(--text-muted); margin-bottom: 50px; font-size: 1rem; max-width: 600px; margin-left: auto; margin-right: auto; }
-        
-        /* Interactive Culinary Grid Menu Section */
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-bottom: 60px; }
-        .menu-card { background: var(--bg-surface); border-radius: 12px; border: 1px solid var(--border-glow); overflow: hidden; text-align: left; transition: transform 0.3s ease; }
-        .menu-card:hover { transform: translateY(-5px); border-color: var(--crimson); }
-        .menu-img-wrap { width: 100%; height: 200px; background: #222; overflow: hidden; position: relative; }
-        .menu-img-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.85; }
-        .menu-card-body { padding: 20px; }
-        .menu-card-body h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.2rem; font-weight: 600; }
-        .menu-card-body p { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
-        .menu-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; border-top: 1px dashed var(--border-glow); padding-top: 15px; }
-        .menu-price { color: var(--accent-gold); font-weight: 600; font-size: 1.1rem; }
-        .menu-tag { background: rgba(230, 57, 70, 0.1); color: var(--crimson); font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
 
-        .steps-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 30px; }
-        .step { flex: 1; min-width: 280px; background: var(--bg-surface); padding: 40px; border-radius: 12px; border: 1px solid var(--border-glow); }
-        .step h3 { margin: 0 0 15px 0; color: #fff; font-size: 1.3rem; }
-        .step-icon { font-size: 3rem; margin-bottom: 20px; }
-        footer { background: #050505; color: var(--text-muted); text-align: center; padding: 50px 20px; border-top: 1px solid var(--border-glow); font-size: 0.95rem; }
+        /* Top Utility Bar */
+        .top-bar {
+            background-color: #eef1ec;
+            border-bottom: 1px solid var(--border-glow);
+            padding: 8px 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .top-bar-info span { margin-right: 20px; display: inline-flex; align-items: center; gap: 6px; }
+        .top-bar i { color: var(--accent-primary); }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(10, 10, 12, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-glow);
+        }
+        .brand { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .brand span { color: var(--accent-primary); }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 500; transition: color 0.3s; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
+        .nav-links a:hover { color: var(--accent-primary); }
+        
+        /* Premium Hero Section */
+        .hero { 
+            background: linear-gradient(rgba(10, 10, 12, 0.65), rgba(10, 10, 12, 0.75)),
+                        url('https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&q=80&w=1920') no-repeat center center/cover; 
+            padding: 140px 20px 220px 20px; 
+            text-align: center; 
+            position: relative;
+        }
+        .hero h1 { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 4.2rem; 
+            font-weight: 800; 
+            margin: 0 auto 15px auto; 
+            color: #ffffff; 
+            max-width: 900px; 
+            line-height: 1.1; 
+            text-shadow:0 4px 15px rgba(0,0,0,0.8); 
+        }
+        .hero p { 
+            font-size: 1.25rem; 
+            max-width: 650px; 
+            margin: 0 auto 40px auto; 
+            color: #f3f4f6; 
+            font-weight: 500; 
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+        .hero-buttons { display: flex; gap: 20px; justify-content: center; }
+
+        /* Buttons */
+        .btn-primary { 
+            background: var(--accent-primary); 
+            color: white; 
+            padding: 15px 35px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            border-radius: 30px; 
+            transition: all 0.3s; 
+            display: inline-flex; 
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            font-size: 0.9rem;
+            border: 2px solid var(--accent-primary);
+            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.25);
+        }
+        .btn-primary:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4); }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 15px 35px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            border-radius: 30px; 
+            transition: all 0.3s; 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            font-size: 0.9rem;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .btn-outline:hover { background: #fff; color: var(--bg-master); transform: translateY(-3px); }
+
+        /* Floating Feature Cards */
+        .floating-features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1200px;
+            margin: -100px auto 60px auto; 
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+            flex-wrap: wrap;
+        }
+        .feature-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-glow);
+            border-top: 4px solid var(--accent-primary);
+            border-radius: 12px;
+            padding: 40px 30px;
+            flex: 1;
+            min-width: 280px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
+        }
+        .feature-card:hover { transform: translateY(-10px); background: var(--bg-surface-elevated); }
+        .feature-icon { font-size: 2.5rem; color: var(--accent-primary); margin-bottom: 20px; }
+        .feature-card h3 { color: #fff; margin-top: 0; font-size: 1.2rem; }
+        .feature-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0; }
+
+        .section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; text-align: center; }
+        .section-header { margin-bottom: 60px; }
+        .section-header h2 { color: #fff; font-size: 2.5rem; margin-bottom: 10px; font-family: 'Playfair Display', serif; }
+        .section-header p { color: var(--accent-primary); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin: 0; }
+        
+        /* Interactive Culinary Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .menu-card { background: var(--bg-surface); border-radius: 12px; border: 1px solid var(--border-glow); overflow: hidden; text-align: left; transition: all 0.3s ease; }
+        .menu-card:hover { transform: translateY(-8px); border-color: var(--accent-primary); box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+        .menu-img-wrap { width: 100%; height: 240px; overflow: hidden; position: relative; }
+        .menu-img-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; transition: transform 0.7s ease; }
+        .menu-card:hover .menu-img-wrap img { transform: scale(1.1); }
+        .price-badge { position: absolute; top: 20px; right: 20px; background: var(--accent-primary); color: #fff; font-weight: 700; padding: 8px 15px; border-radius: 30px; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .menu-card-body { padding: 30px; }
+        .menu-card-body h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.4rem; font-weight: 600; }
+        .menu-card-body p { margin: 0 0 20px 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+        .menu-action { display: block; text-align: center; background: rgba(230, 57, 70, 0.1); color: var(--accent-primary); padding: 12px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s; border: 1px solid rgba(230, 57, 70, 0.2); }
+        .menu-action:hover { background: var(--accent-primary); color: #fff; }
+
+        /* Multi-Column Footer */
+        footer { background: #050505; color: var(--text-muted); padding: 70px 20px 30px 20px; border-top: 1px solid var(--border-glow); }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 50px; }
+        .footer-col h4 { color: #fff; font-size: 1.2rem; margin-bottom: 25px; font-weight: 600; position: relative; padding-bottom: 10px; }
+        .footer-col h4::after { content: ''; position: absolute; left: 0; bottom: 0; width: 40px; height: 3px; background: var(--accent-primary); }
+        .footer-col p, .footer-col li { font-size: 0.95rem; line-height: 1.8; }
+        .footer-col ul { list-style: none; padding: 0; margin: 0; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul a { color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+        .footer-col ul a:hover { color: var(--accent-primary); padding-left: 5px; }
+        .footer-bottom { text-align: center; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; gap: 20px; padding: 20px; }
+            .hero h1 { font-size: 2.8rem; }
+            .floating-features { margin-top: -60px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="hero">
-        <h1>OGITECH RESTAURANT AUTOMATED KITCHEN PORTAL<br><span style="color: var(--crimson); font-size: 2rem;">(Smart Order Management System)</span></h1>
-        <p>An intelligent scheduling system engineered to optimize food orders, minimize prep times, and secure instant transaction fulfillment.</p>
-        <a href="/order" class="btn-primary">Order your meal here</a>
+    <!-- Top Utility Bar -->
+    <div class="top-bar">
+        <div class="top-bar-info">
+            <span><i class="fas fa-map-marker-alt"></i> Ibeshe, Ilaro/Igbesa Rd, Ogun State</span>
+            <span><i class="fas fa-clock"></i> Mon - Sat: 8:00 AM - 8:00 PM</span>
+        </div>
+        <div class="top-bar-contact">
+            <span><i class="fas fa-phone-alt"></i> Support: +234 702 685 2515</span>
+        </div>
     </div>
 
-    <!-- Brand New Premium Showcase Culinary Menu Section -->
-    <div class="section" style="border-bottom: 1px solid var(--border-glow);">
-        <h2>Our Premium Culinary Masterpieces</h2>
-        <p class="section-subtitle">Explore a glimpse of elite culinary combos currently engineered and served live through our automated kitchen queues.</p>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="/" class="brand"><i class="fas fa-utensils"></i> OGITECH <span>Express</span></a>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="#menu">Menu</a>
+            <a href="/order">Order Now</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Order the Finest Food Direct to Your Desk</h1>
+        <p>Bypass the campus queues with our smart scheduling system. Engineered to optimize prep times and secure instant, cashless transaction fulfillment.</p>
+        <div class="hero-buttons">
+            <a href="/order" class="btn-primary"><i class="fas fa-shopping-cart"></i> Start Order</a>
+            <a href="#menu" class="btn-outline">View Menu</a>
+        </div>
+    </div>
+
+    <!-- Floating Architectural Modules -->
+    <div class="floating-features">
+        <div class="feature-card">
+            <i class="fas fa-mobile-alt feature-icon"></i>
+            <h3>Digital Selection</h3>
+            <p>Browse the interactive terminal, configure your plate size, and submit your meal preferences instantly.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-credit-card feature-icon"></i>
+            <h3>100% Cashless Pay</h3>
+            <p>Complete your transaction securely online to generate a verified Order ID. No cash accepted at the counter.</p>
+        </div>
+        <div class="feature-card">
+            <i class="fas fa-bell feature-icon"></i>
+            <h3>Live Queue Dispatch</h3>
+            <p>Track your exact rank in the kitchen queue. Present your token only when your food is ready for pickup.</p>
+        </div>
+    </div>
+
+    <!-- Signature Menu Section -->
+    <div id="menu" class="section">
+        <div class="section-header">
+            <p>Discover Our</p>
+            <h2>Signature Dishes</h2>
+        </div>
         
         <div class="menu-grid">
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&q=80&w=600" alt="Jollof Rice Combo">
+                    <span class="price-badge">₦3,000</span>
+                    <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&q=80&w=600" alt="Jollof Rice">
                 </div>
                 <div class="menu-card-body">
                     <h3>Signature Jollof & Fried Rice</h3>
                     <p>Smoky West African jollof paired with premium fried rice, succulent chicken, and sweet fried plantains.</p>
-                    <div class="menu-meta">
-                        <span class="menu-price">₦3,000</span>
-                        <span class="menu-tag">Chef's Choice</span>
-                    </div>
+                    <a href="/order" class="menu-action"><i class="fas fa-plus"></i> Order This Item</a>
                 </div>
             </div>
             
             <div class="menu-card">
                 <div class="menu-img-wrap">
+                    <span class="price-badge">₦3,000</span>
                     <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600" alt="Amala Special">
                 </div>
                 <div class="menu-card-body">
                     <h3>Abula Special Sovereign</h3>
                     <p>Traditional piping hot Amala served with fluffy Gbegiri, smooth Ewedu sauce, and rich tender Ogunfe meat.</p>
-                    <div class="menu-meta">
-                        <span class="menu-price">₦3,000</span>
-                        <span class="menu-tag">Traditional Elite</span>
-                    </div>
+                    <a href="/order" class="menu-action"><i class="fas fa-plus"></i> Order This Item</a>
                 </div>
             </div>
 
             <div class="menu-card">
                 <div class="menu-img-wrap">
+                    <span class="price-badge">₦2,500</span>
                     <img src="https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&q=80&w=600" alt="Crispy Platter">
                 </div>
                 <div class="menu-card-body">
                     <h3>Crispy Chicken & Chips Platter</h3>
                     <p>Golden-fried crunch chicken breast strips paired with salted skin-on gourmet potato chips and dipping sauce.</p>
-                    <div class="menu-meta">
-                        <span class="menu-price">₦2,500</span>
-                        <span class="menu-tag">Quick Eats</span>
-                    </div>
+                    <a href="/order" class="menu-action"><i class="fas fa-plus"></i> Order This Item</a>
                 </div>
             </div>
         </div>
-        
-        <a href="/order" class="btn-primary" style="background: transparent; border: 2px solid var(--crimson); color: var(--crimson);">View Entire Interactive Menu</a>
     </div>
 
-    <div class="section">
-        <h2>Core Architectural Modules</h2>
-        <div class="steps-container">
-            <div class="step">
-                <div class="step-icon">📱</div>
-                <h3>1. Order Ingestion</h3>
-                <p>Customers submit automated food processing jobs tied to distinct volume criteria via the interactive terminal.</p>
-            </div>
-            <div class="step">
-                <div class="step-icon">📊</div>
-                <h3>2. Queue Scheduling</h3>
-                <p>The processing engine automatically sorts incoming food payloads using comparative SJF and FIFO scheduling algorithms.</p>
-            </div>
-            <div class="step">
-                <div class="step-icon">🛍️</div>
-                <h3>3. Token Verification</h3>
-                <p>Secure webhooks instantly process state transitions, routing verified tokens directly to the kitchen monitors for dispatch.</p>
-            </div>
-        </div>
-    </div>
-
+    <!-- Multi-Column Footer -->
     <footer>
-        <p>&copy; 2026 OGITECH Restaurant System | Core Food Operations Management</p>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #fff;">OGITECH <span style="color: var(--accent-primary);">Express</span></h4>
+                <p>An advanced queue management and order ingestion terminal built for modern campus dining. Strictly cashless, strictly efficient.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/"><i class="fas fa-angle-right"></i> Home Dashboard</a></li>
+                    <li><a href="#menu"><i class="fas fa-angle-right"></i> View Live Menu</a></li>
+                    <li><a href="/order"><i class="fas fa-angle-right"></i> Customer Terminal</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Find Us</h4>
+                <p>
+                    <i class="fas fa-map-marker-alt" style="color: var(--accent-primary); margin-right: 10px;"></i> 
+                    Ogun State Institute of Technology (OGITECH)<br>
+                    Itebu-Otu, Ibeshe, Ilaro/Igbesa Road<br>
+                    Ogun State, Nigeria
+                </p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>System Architecture</h4>
+                <div>
+    <h3 style="color: #ff4d4d;">Payment Notice</h3>
+    <p>OGITECH Express is strictly cashless. All payments must be completed online during checkout before order processing.</p>
+</div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 OGITECH Food Express | Smart Order Management System. All Rights Reserved.</p>
+        </div>
     </footer>
 
 </body>
