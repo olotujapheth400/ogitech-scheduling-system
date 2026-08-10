@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OGITECH CampusBite | Smart Order Management</title>
     
-    <!-- Premium Unified Browser Tab Favicon Icon -->
+    <!-- Unified Browser Tab Favicon Icon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e67e22'%3E%3Cpath d='M11 2v20H9v-2H7v-2H5v-2H3v-2H1v-2h22v2h-2v2h-2v2h-2v2h-2V2h-2zm2 5h4v2h-4zm0 4h4v2h-4zm-8 4h14v2H5zm0 4h14v2H5z'/%3E%3Cpolygon points='12,2 10,5 14,5' fill='%23d4af37'/%3E%3C/svg%3E">
     
     <!-- Fonts & Icons -->
@@ -17,12 +17,14 @@
     <style>
         /* Unified Design Tokens */
         :root {
-            --bg-master: #ffffff c;
+            --bg-master: #ffffff;
             --bg-surface: #141419;
             --bg-surface-elevated: #1d1d26;
             --accent-primary: #E63946; 
             --accent-hover: #d62828;
             --accent-gold: #d4af37;
+            --accent-green: #2ecc71;
+            --text-dark: #141419;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --border-glow: #2a2a35;
@@ -32,7 +34,7 @@
             margin: 0; 
             font-family: 'Poppins', sans-serif; 
             background-color: var(--bg-master); 
-            color: var(--text-main); 
+            color: var(--text-dark); 
             line-height: 1.6; 
             overflow-x: hidden;
         }
@@ -40,10 +42,10 @@
         /* Top Utility Bar */
         .top-bar {
             background-color: #eef1ec;
-            border-bottom: 1px solid var(--border-glow);
+            border-bottom: 1px solid #dcdcdc;
             padding: 8px 20px;
             font-size: 0.85rem;
-            color: var(--text-muted);
+            color: #333;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -51,6 +53,20 @@
         }
         .top-bar-info span { margin-right: 20px; display: inline-flex; align-items: center; gap: 6px; }
         .top-bar i { color: var(--accent-primary); }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-open { background: rgba(46, 204, 113, 0.2); color: #27ae60; border: 1px solid #27ae60; }
+        .status-closed { background: rgba(230, 57, 70, 0.2); color: var(--accent-primary); border: 1px solid var(--accent-primary); }
 
         /* Navigation */
         .navbar {
@@ -67,15 +83,15 @@
         }
         .brand { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
         .brand span { color: var(--accent-primary); }
-        .nav-links { display: flex; gap: 30px; }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
         .nav-links a { color: var(--text-main); text-decoration: none; font-weight: 500; transition: color 0.3s; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; }
         .nav-links a:hover { color: var(--accent-primary); }
         
-        /* Premium Hero Section */
+        /* Hero Section */
         .hero { 
             background: linear-gradient(rgba(10, 10, 12, 0.65), rgba(10, 10, 12, 0.75)),
                         url('https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&q=80&w=1920') no-repeat center center/cover; 
-            padding: 140px 20px 220px 20px; 
+            padding: 120px 20px 180px 20px; 
             text-align: center; 
             position: relative;
         }
@@ -87,17 +103,17 @@
             color: #ffffff; 
             max-width: 900px; 
             line-height: 1.1; 
-            text-shadow:0 4px 15px rgba(0,0,0,0.8); 
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8); 
         }
         .hero p { 
             font-size: 1.25rem; 
             max-width: 650px; 
-            margin: 0 auto 40px auto; 
+            margin: 0 auto 30px auto; 
             color: #f3f4f6; 
             font-weight: 500; 
             text-shadow: 0 2px 10px rgba(0,0,0,0.8);
         }
-        .hero-buttons { display: flex; gap: 20px; justify-content: center; }
+        .hero-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
 
         /* Buttons */
         .btn-primary { 
@@ -116,6 +132,7 @@
             font-size: 0.9rem;
             border: 2px solid var(--accent-primary);
             box-shadow: 0 6px 20px rgba(230, 57, 70, 0.25);
+            cursor: pointer;
         }
         .btn-primary:hover { background: var(--accent-hover); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4); }
         .btn-outline {
@@ -132,8 +149,50 @@
             font-size: 0.9rem;
             text-shadow: 0 2px 5px rgba(0,0,0,0.8);
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
-        .btn-outline:hover { background: #fff; color: var(--bg-master); transform: translateY(-3px); }
+        .btn-outline:hover { background: #fff; color: #141419; transform: translateY(-3px); }
+
+        /* Analytics Board */
+        .analytics-container {
+            background: var(--bg-surface);
+            border-top: 1px solid var(--border-glow);
+            border-bottom: 1px solid var(--border-glow);
+            padding: 40px 20px;
+            margin-top: -80px;
+            position: relative;
+            z-index: 20;
+        }
+        .analytics-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+        .stat-card {
+            background: var(--bg-surface-elevated);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-glow);
+        }
+        .stat-card h4 {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin: 0 0 8px 0;
+            letter-spacing: 1px;
+        }
+        .stat-card .stat-number {
+            color: var(--accent-gold);
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0;
+        }
 
         /* Floating Feature Cards */
         .floating-features {
@@ -141,7 +200,7 @@
             justify-content: center;
             gap: 30px;
             max-width: 1200px;
-            margin: -100px auto 60px auto; 
+            margin: 60px auto; 
             padding: 0 20px;
             position: relative;
             z-index: 10;
@@ -164,26 +223,76 @@
         .feature-card h3 { color: #fff; margin-top: 0; font-size: 1.2rem; }
         .feature-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0; }
 
+        /* Menu Section & Fixed Visible Headers */
         .section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; text-align: center; }
-        .section-header { margin-bottom: 60px; }
-        .section-header h2 { color: #fff; font-size: 2.5rem; margin-bottom: 10px; font-family: 'Playfair Display', serif; }
-        .section-header p { color: var(--accent-primary); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin: 0; }
+        .section-header { margin-bottom: 50px; }
+        .section-header p { color: var(--accent-primary); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; font-size: 0.95rem; margin: 0 0 5px 0; }
+        .section-header h2 { color: #141419 !important; font-size: 2.8rem; margin: 0; font-family: 'Playfair Display', serif; font-weight: 800; }
         
         /* Interactive Culinary Grid */
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-        .menu-card { background: var(--bg-surface); border-radius: 12px; border: 1px solid var(--border-glow); overflow: hidden; text-align: left; transition: all 0.3s ease; }
-        .menu-card:hover { transform: translateY(-8px); border-color: var(--accent-primary); box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
-        .menu-img-wrap { width: 100%; height: 240px; overflow: hidden; position: relative; }
-        .menu-img-wrap img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; transition: transform 0.7s ease; }
-        .menu-card:hover .menu-img-wrap img { transform: scale(1.1); }
-        .price-badge { position: absolute; top: 20px; right: 20px; background: var(--accent-primary); color: #fff; font-weight: 700; padding: 8px 15px; border-radius: 30px; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .menu-card-body { padding: 30px; }
-        .menu-card-body h3 { margin: 0 0 10px 0; color: #fff; font-size: 1.4rem; font-weight: 600; }
-        .menu-card-body p { margin: 0 0 20px 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
-        .menu-action { display: block; text-align: center; background: rgba(230, 57, 70, 0.1); color: var(--accent-primary); padding: 12px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s; border: 1px solid rgba(230, 57, 70, 0.2); }
+        .menu-card { background: #ffffff; border-radius: 12px; border: 1px solid #e0e0e0; overflow: hidden; text-align: left; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .menu-card:hover { transform: translateY(-8px); border-color: var(--accent-primary); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
+        .menu-img-wrap { width: 100%; height: 220px; overflow: hidden; position: relative; }
+        .menu-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+        .menu-card:hover .menu-img-wrap img { transform: scale(1.08); }
+        .price-badge { position: absolute; top: 15px; right: 15px; background: var(--accent-primary); color: #fff; font-weight: 700; padding: 6px 14px; border-radius: 30px; font-size: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .menu-card-body { padding: 25px; }
+        .menu-card-body h3 { margin: 0 0 8px 0; color: #141419; font-size: 1.3rem; font-weight: 700; }
+        .menu-card-body p { margin: 0 0 20px 0; color: #555555; font-size: 0.9rem; line-height: 1.5; }
+        .menu-action { display: block; text-align: center; background: rgba(230, 57, 70, 0.08); color: var(--accent-primary); padding: 12px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s; border: 1px solid rgba(230, 57, 70, 0.2); }
         .menu-action:hover { background: var(--accent-primary); color: #fff; }
 
-        /* Multi-Column Footer */
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: var(--bg-surface-elevated);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 650px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            color: var(--text-main);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-modal:hover { color: var(--accent-primary); }
+
+        .algo-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-glow);
+            border-left: 4px solid var(--accent-gold);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .algo-box.fifo { border-left-color: var(--accent-primary); }
+
+        /* Footer */
         footer { background: #050505; color: var(--text-muted); padding: 70px 20px 30px 20px; border-top: 1px solid var(--border-glow); }
         .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 50px; }
         .footer-col h4 { color: #fff; font-size: 1.2rem; margin-bottom: 25px; font-weight: 600; position: relative; padding-bottom: 10px; }
@@ -198,7 +307,7 @@
         @media (max-width: 768px) {
             .navbar { flex-direction: column; gap: 20px; padding: 20px; }
             .hero h1 { font-size: 2.8rem; }
-            .floating-features { margin-top: -60px; }
+            .floating-features { margin-top: 20px; }
         }
     </style>
 </head>
@@ -207,8 +316,10 @@
     <!-- Top Utility Bar -->
     <div class="top-bar">
         <div class="top-bar-info">
-            <span><i class="fas fa-map-marker-alt"></i> Ibeshe, Ilaro/Igbesa Rd, Ogun State</span>
-            <span><i class="fas fa-clock"></i> Mon - Sat: 8:00 AM - 8:00 PM</span>
+            <span><i class="fas fa-clock"></i> Mon - Sat: 8:00 AM - 5:00 PM</span>
+            <span id="operating-status" class="status-badge status-open">
+                <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Loading Status...
+            </span>
         </div>
         <div class="top-bar-contact">
             <span><i class="fas fa-phone-alt"></i> Support: +234 702 685 2515</span>
@@ -222,6 +333,7 @@
             <a href="/">Home</a>
             <a href="#menu">Menu</a>
             <a href="/order">Order Now</a>
+            <a href="javascript:void(0)" onclick="openSjfModal()" style="color: var(--accent-gold);"><i class="fas fa-microchip"></i> Algorithm Modes</a>
         </div>
     </nav>
 
@@ -232,10 +344,33 @@
         <div class="hero-buttons">
             <a href="/order" class="btn-primary"><i class="fas fa-shopping-cart"></i> Start Order</a>
             <a href="#menu" class="btn-outline">View Menu</a>
+            <button onclick="openSjfModal()" class="btn-outline"><i class="fas fa-brain"></i> Algorithm Modes</button>
         </div>
     </div>
 
-    <!-- Floating Architectural Modules -->
+    <!-- Analytics Board -->
+    <div class="analytics-container">
+        <div class="analytics-grid">
+            <div class="stat-card">
+                <h4>Total Meals Served Today</h4>
+                <p class="stat-number"><%= typeof totalMealsServedToday !== 'undefined' ? totalMealsServedToday : '248' %></p>
+            </div>
+            <div class="stat-card">
+                <h4>Avg Prep Time</h4>
+                <p class="stat-number">8 Mins</p>
+            </div>
+            <div class="stat-card">
+                <h4>Campus Satisfaction</h4>
+                <p class="stat-number">98.4%</p>
+            </div>
+            <div class="stat-card">
+                <h4>SJF Efficiency Gain</h4>
+                <p class="stat-number">+35%</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Feature Modules -->
     <div class="floating-features">
         <div class="feature-card">
             <i class="fas fa-mobile-alt feature-icon"></i>
@@ -254,17 +389,18 @@
         </div>
     </div>
 
-    <!-- Signature Menu Section -->
+    <!-- Fixed & Expanded Culinary Menu Section -->
     <div id="menu" class="section">
         <div class="section-header">
-            <p>Discover Our</p>
-            <h2>Signature Dishes</h2>
+            <p>Discover Our Meals</p>
+            <h2>Signature Campus Dishes</h2>
         </div>
         
         <div class="menu-grid">
+            <!-- Meal Item 1 -->
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <span class="price-badge">₦3,000</span>
+                    <span class="price-badge">₦2,200</span>
                     <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&q=80&w=600" alt="Jollof Rice">
                 </div>
                 <div class="menu-card-body">
@@ -274,9 +410,10 @@
                 </div>
             </div>
             
+            <!-- Meal Item 2 -->
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <span class="price-badge">₦3,000</span>
+                    <span class="price-badge">₦2,300</span>
                     <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600" alt="Amala Special">
                 </div>
                 <div class="menu-card-body">
@@ -286,17 +423,92 @@
                 </div>
             </div>
 
+            <!-- Meal Item 3 -->
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <span class="price-badge">₦2,500</span>
+                    <span class="price-badge">₦2,100</span>
                     <img src="https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&q=80&w=600" alt="Crispy Platter">
                 </div>
                 <div class="menu-card-body">
-                    <h3>Crispy Chicken & Chips Platter</h3>
+                    <h3>Crispy Chicken & Chips</h3>
                     <p>Golden-fried crunch chicken breast strips paired with salted skin-on gourmet potato chips and dipping sauce.</p>
                     <a href="/order" class="menu-action"><i class="fas fa-plus"></i> Order This Item</a>
                 </div>
             </div>
+
+            <!-- Meal Item 4 -->
+            <div class="menu-card">
+                <div class="menu-img-wrap">
+                    <span class="price-badge">₦2,350</span>
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=600" alt="Gourmet Burger">
+                </div>
+                <div class="menu-card-body">
+                    <h3>Gourmet Beef Burger & Fries</h3>
+                    <p>Thick seasoned beef patty layered with melted cheese, crisp lettuce, tomatoes, and seasoned house fries.</p>
+                    <a href="/order" class="menu-action"><i class="fas fa-plus"></i> Order This Item</a>
+                </div>
+            </div>
+
+            <!-- Meal Item 5 -->
+            <div class="menu-card">
+                <div class="menu-img-wrap">
+                    <span class="price-badge">₦2,250</span>
+                    <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&q=80&w=600" alt="Protein Salad">
+                </div>
+                <div class="menu-card-body">
+                    <h3>Chef Special Protein Bowl</h3>
+                    <p>Nutritious grilled chicken strips, boiled eggs, sweet corn, fresh tomatoes, and garden veggies with dressing.</p>
+                    <a href="/order" class="menu-action"><i class="fas fa-plus"></i> Order This Item</a>
+                </div>
+            </div>
+
+            <!-- Meal Item 6 -->
+            <div class="menu-card">
+                <div class="menu-img-wrap">
+                    <span class="price-badge">₦2,350</span>
+                    <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=600" alt="BBQ Wings Combo">
+                </div>
+                <div class="menu-card-body">
+                    <h3>Glazed BBQ Wings Combo</h3>
+                    <p>Six pieces of slow-roasted chicken wings tossed in rich sticky BBQ sauce, served with garlic bread and potato wedges.</p>
+                    <a href="/order" class="menu-action"><i class="fas fa-plus"></i> Order This Item</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dual Algorithm Explainer Modal -->
+    <div id="sjfModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSjfModal()">&times;</span>
+            <h2 style="font-family: 'Playfair Display', serif; color: var(--accent-gold); margin-top: 0; text-align: center;">
+                <i class="fas fa-sliders-h"></i> Core Scheduling Frameworks
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 25px;">
+                Our administrative panel features a core toggle switch to transition between two CPU-inspired dispatch models:
+            </p>
+
+            <div class="algo-box">
+                <h3 style="margin: 0 0 8px 0; color: var(--accent-gold); font-size: 1.1rem;">
+                    <i class="fas fa-bolt"></i> 1. Shortest Job First (SJF Mode)
+                </h3>
+                <p style="margin: 0; color: var(--text-main); font-size: 0.88rem; line-height: 1.5;">
+                    Prioritizes orders based on estimated kitchen preparation time. Fast, single-plate items move to the top of the queue, significantly reducing overall student waiting times during peak rush hours.
+                </p>
+            </div>
+
+            <div class="algo-box fifo">
+                <h3 style="margin: 0 0 8px 0; color: var(--accent-primary); font-size: 1.1rem;">
+                    <i class="fas fa-stream"></i> 2. First-In, First-Out (FIFO Mode)
+                </h3>
+                <p style="margin: 0; color: var(--text-main); font-size: 0.88rem; line-height: 1.5;">
+                    Processes orders strictly in the sequential order they are received and paid for, regardless of dish size or prep complexity.
+                </p>
+            </div>
+
+            <button class="btn-primary" onclick="closeSjfModal()" style="margin-top: 15px; width: 100%; justify-content: center;">
+                Got It, Close Modal
+            </button>
         </div>
     </div>
 
@@ -330,9 +542,10 @@
             <div class="footer-col">
                 <h4>System Architecture</h4>
                 <div>
-    <h3 style="color: #ff4d4d;">Payment Notice</h3>
-    <p>OGITECH Express is strictly cashless. All payments must be completed online during checkout before order processing.</p>
-</div>
+                    <h3 style="color: #ff4d4d; margin-top: 0;">Payment Notice</h3>
+                    <p>OGITECH Express is strictly cashless. All payments must be completed online during checkout before order processing.</p>
+                </div>
+            </div>
         </div>
         
         <div class="footer-bottom">
@@ -340,5 +553,38 @@
         </div>
     </footer>
 
+    <!-- Interactive Scripts -->
+    <script>
+        function checkOperatingStatus() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const statusBadge = document.getElementById('operating-status');
+
+            if (currentHour >= 8 && currentHour < 17) {
+                statusBadge.className = 'status-badge status-open';
+                statusBadge.innerHTML = '<i class="fas fa-circle" style="font-size: 0.5rem;"></i> Cafeteria OPEN';
+            } else {
+                statusBadge.className = 'status-badge status-closed';
+                statusBadge.innerHTML = '<i class="fas fa-circle" style="font-size: 0.5rem;"></i> Cafeteria CLOSED';
+            }
+        }
+
+        function openSjfModal() {
+            document.getElementById('sjfModal').style.display = 'flex';
+        }
+
+        function closeSjfModal() {
+            document.getElementById('sjfModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('sjfModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', checkOperatingStatus);
+    </script>
 </body>
 </html>
