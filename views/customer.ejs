@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OGITECH CampusBite | Order Terminal</title>
+    <title>OGITECH Express | Order Terminal</title>
     
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e67e22'%3E%3Cpath d='M11 2v20H9v-2H7v-2H5v-2H3v-2H1v-2h22v2h-2v2h-2v2h-2v2h-2V2h-2zm2 5h4v2h-4zm0 4h4v2h-4zm-8 4h14v2H5zm0 4h14v2H5z'/%3E%3Cpolygon points='12,2 10,5 14,5' fill='%23d4af37'/%3E%3C/svg%3E">
 
@@ -362,9 +362,9 @@
         input:focus, select:focus { border-color: var(--accent-primary); outline: none; }
 
         .payment-notice {
-            background: rgba(46, 204, 113, 0.1);
-            border: 1px dashed #2ecc71;
-            color: #2ecc71;
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px dashed #3498db;
+            color: #3498db;
             padding: 12px;
             border-radius: 8px;
             text-align: center;
@@ -553,7 +553,7 @@
                 </p>
                 
                 <div class="receipt-line"></div>
-                <p style="font-size:16px; margin:4px 0; text-align:right; font-weight:bold;">PAID ONLINE: ₦<%= ticket.totalPrice.toLocaleString() %></p>
+                <p style="font-size:16px; margin:4px 0; text-align:right; font-weight:bold;">TOTAL BILL: ₦<%= ticket.totalPrice.toLocaleString() %></p>
                 <div class="receipt-line"></div>
                 <p style="font-size: 10px; color: #888;">Present this token at the counter for pickup.</p>
             </div>
@@ -562,7 +562,7 @@
 
         <% if (locals.error) { %>
             <div class="error-alert">
-                ⚠️ <span>An error occurred with payment processing (<%= locals.error %>). Please check your connection and details, then try again.</span>
+                ⚠️ <span>An error occurred with order processing (<%= locals.error %>). Please check your connection and details, then try again.</span>
             </div>
         <% } %>
 
@@ -627,7 +627,8 @@
             <span class="form-section-title" id="step3Target" style="scroll-margin-top: 30px;">3. Order Configuration</span>
             <div class="input-row">
                 <div class="input-group">
-                    <select name="quantity" id="quantity">
+                    <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 5px;">Number of Plates</label>
+                    <select name="quantity" id="quantity" onchange="calculateTotalBill()">
                         <option value="1">1 Plate (Single)</option>
                         <option value="2">2 Plates (Double)</option>
                         <option value="3">3 Plates</option>
@@ -636,19 +637,26 @@
                     </select>
                 </div>
                 <div class="input-group">
-                    <select name="priority" id="priority">
+                    <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 5px;">Processing Speed</label>
+                    <select name="priority" id="priority" onchange="calculateTotalBill()">
                         <option value="0">Standard Queue (Regular Base Price)</option>
                         <option value="1">VIP Fast-Track (+₦500 Priority Processing)</option>
                     </select>
                 </div>
             </div>
 
+            <!-- Live Total Bill Preview Box -->
+            <div id="liveTotalBillBox" style="background: rgba(230, 57, 70, 0.1); border: 1px solid var(--accent-primary); padding: 16px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-weight: 600; font-size: 14px; color: #fff;">Estimated Total Bill:</span>
+                <span id="displayTotalAmount" style="font-size: 20px; font-weight: 800; color: var(--accent-primary);">₦0</span>
+            </div>
+
             <div class="payment-notice">
-                🔒 <b>STRICTLY ONLINE PAYMENT:</b> Cashless transaction. Your order dispatches directly to the kitchen once online payment is processed.
+                🛎️ <b>💳 ONLINE PAYMENT REQUIRED:</b> Complete your payment securely to dispatch your order and generate your instant meal token.
             </div>
 
             <button type="submit" class="order-dispatch-btn" id="submitBtn">
-                <span id="btnText">💳 Pay Online & Place Order</span>
+                <span id="btnText">🍳 Place Order to Kitchen</span>
             </button>
         </form>
     </div>
@@ -677,7 +685,7 @@
                         <b>Ticket:</b> <%= searchResult.orderId %><br>
                         <b>Details:</b> <%= searchResult.quantity %>x <%= searchResult.foodName %><br>
                         <p style="margin:10px 0 0 0; color:#fff; border-top:1px dashed #2ecc71; padding-top:10px;">
-                            👉 Please proceed to the kitchen counter and present your Order ID to collect your meal plate! (Payment verified).
+                            👉 Please proceed to the kitchen counter and present your Order ID to collect your meal plate!
                         </p>
                     </div>
                 <% } else if (searchResult.status === 'Collected') { %>
@@ -744,7 +752,7 @@
     
     <div class="chat-message-area" id="chatMsgConsole">
         <div class="msg-bubble msg-bot">
-            Hello! Welcome to the OGITECH Help Desk. Having trouble with your online payment or tracking your meal?
+            Hello! Welcome to the OGITECH Help Desk. Having trouble placing an order or tracking your meal?
         </div>
     </div>
 
@@ -788,12 +796,17 @@
         }
     }
 
+    let currentBasePrice = 0;
+
     function handleMealSelection(radioElement) {
         const dishName = radioElement.getAttribute('data-name');
-        const dishPrice = parseInt(radioElement.getAttribute('data-price')).toLocaleString();
+        const rawPrice = radioElement.getAttribute('data-price');
+        
+        currentBasePrice = parseInt(rawPrice) || 0;
+        const formattedPrice = currentBasePrice.toLocaleString();
 
         document.getElementById('summaryDishName').innerText = dishName;
-        document.getElementById('summaryDishPrice').innerText = '₦' + dishPrice;
+        document.getElementById('summaryDishPrice').innerText = '₦' + formattedPrice;
         document.getElementById('selectedSummary').style.display = 'flex';
 
         document.getElementById('accordionLabel').innerText = '✓ Selected: ' + dishName;
@@ -803,9 +816,20 @@
         container.classList.remove('open');
         btn.classList.remove('active');
 
+        calculateTotalBill();
+
         setTimeout(() => {
             document.getElementById('step3Target').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 200);
+    }
+
+    function calculateTotalBill() {
+        const quantity = parseInt(document.getElementById('quantity').value) || 1;
+        const prioritySelect = document.getElementById('priority').value;
+        const vipFee = (prioritySelect === '1') ? 500 : 0;
+
+        const totalBill = (currentBasePrice * quantity) + vipFee;
+        document.getElementById('displayTotalAmount').innerText = '₦' + totalBill.toLocaleString();
     }
 
     function switchTab(event, tabId) {
@@ -841,7 +865,7 @@
             submitBtn.disabled = true;
             submitBtn.style.opacity = '0.7';
             submitBtn.style.cursor = 'wait';
-            btnText.innerText = "Connecting to Paystack Gateway...";
+            btnText.innerText = "Dispatching Order to Kitchen Queue...";
         });
     }
 
@@ -884,7 +908,7 @@
             botBubble.className = 'msg-bubble msg-bot';
             const upperText = text.toUpperCase();
             if (upperText.includes('PAY') || upperText.includes('MONEY') || upperText.includes('CASH')) {
-                botBubble.innerText = "We strictly process payments online through our secure gateway. Cash is not accepted at the pickup counter.";
+                botBubble.innerText = "Orders are placed directly to the kitchen queue. You can check your total bill instantly before submitting.";
             } else if (upperText.includes('MENU') || upperText.includes('FOOD')) {
                 botBubble.innerText = "Click on '2. Select Your Meal' to drop down and view all current dishes from the admin database!";
             } else {

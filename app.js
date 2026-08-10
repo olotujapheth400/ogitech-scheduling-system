@@ -253,7 +253,15 @@ function isStaff(req, res, next) {
 // PUBLIC & CUSTOMER ROUTES
 // =========================================================================
 
-app.get('/', (req, res) => { res.render('index'); });
+app.get('/', async (req, res) => {
+    try {
+        const totalServed = await Order.countDocuments({ status: 'Collected' });
+        res.render('index', { totalMealsServedToday: totalServed });
+    } catch (err) {
+        console.error("Index Render Error:", err);
+        res.render('index', { totalMealsServedToday: 0 });
+    }
+});
 
 app.get('/order', async (req, res) => {
     try {
@@ -417,7 +425,16 @@ app.get('/payment/callback', async (req, res) => {
 // STAFF PORTAL
 // =========================================================================
 
-app.get('/ogitech-kitchen-gate-2026', (req, res) => { res.render('login', { error: req.query.error || null }); });
+// ROUTE MATCHES views/login.ejs WITH SAFE ERROR CALLBACK
+app.get('/ogitech-kitchen-gate-2026', (req, res) => { 
+    res.render('login', { error: req.query.error || null }, (err, html) => {
+        if (err) {
+            console.error("Login Page Render Error:", err);
+            return res.status(500).send("Error rendering login page: " + err.message);
+        }
+        res.send(html);
+    }); 
+});
 
 app.post('/ogitech-kitchen-gate-2026', async (req, res) => {
     try {

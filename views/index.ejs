@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OGITECH CampusBite | Smart Order Management</title>
+    <title>OGITECH Express | Smart Order Management</title>
     
     <!-- Unified Browser Tab Favicon Icon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23e67e22'%3E%3Cpath d='M11 2v20H9v-2H7v-2H5v-2H3v-2H1v-2h22v2h-2v2h-2v2h-2v2h-2V2h-2zm2 5h4v2h-4zm0 4h4v2h-4zm-8 4h14v2H5zm0 4h14v2H5z'/%3E%3Cpolygon points='12,2 10,5 14,5' fill='%23d4af37'/%3E%3C/svg%3E">
@@ -353,7 +353,7 @@
         <div class="analytics-grid">
             <div class="stat-card">
                 <h4>Total Meals Served Today</h4>
-                <p class="stat-number"><%= typeof totalMealsServedToday !== 'undefined' ? totalMealsServedToday : '248' %></p>
+                <p class="stat-number"><%- locals.totalMealsServedToday || '248' %></p>
             </div>
             <div class="stat-card">
                 <h4>Avg Prep Time</h4>
@@ -400,7 +400,7 @@
             <!-- Meal Item 1 -->
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <span class="price-badge">₦2,200</span>
+                    <span class="price-badge">₦3,000</span>
                     <img src="https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?auto=format&fit=crop&q=80&w=600" alt="Jollof Rice">
                 </div>
                 <div class="menu-card-body">
@@ -413,7 +413,7 @@
             <!-- Meal Item 2 -->
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <span class="price-badge">₦2,300</span>
+                    <span class="price-badge">₦3,000</span>
                     <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=600" alt="Amala Special">
                 </div>
                 <div class="menu-card-body">
@@ -426,7 +426,7 @@
             <!-- Meal Item 3 -->
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <span class="price-badge">₦2,100</span>
+                    <span class="price-badge">₦2,500</span>
                     <img src="https://images.unsplash.com/photo-1512152272829-e3139592d56f?auto=format&fit=crop&q=80&w=600" alt="Crispy Platter">
                 </div>
                 <div class="menu-card-body">
@@ -439,7 +439,7 @@
             <!-- Meal Item 4 -->
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <span class="price-badge">₦2,350</span>
+                    <span class="price-badge">₦2,800</span>
                     <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=600" alt="Gourmet Burger">
                 </div>
                 <div class="menu-card-body">
@@ -452,7 +452,7 @@
             <!-- Meal Item 5 -->
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <span class="price-badge">₦2,250</span>
+                    <span class="price-badge">₦3,200</span>
                     <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&q=80&w=600" alt="Protein Salad">
                 </div>
                 <div class="menu-card-body">
@@ -465,7 +465,7 @@
             <!-- Meal Item 6 -->
             <div class="menu-card">
                 <div class="menu-img-wrap">
-                    <span class="price-badge">₦2,350</span>
+                    <span class="price-badge">₦3,500</span>
                     <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&q=80&w=600" alt="BBQ Wings Combo">
                 </div>
                 <div class="menu-card-body">
