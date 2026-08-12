@@ -14,6 +14,10 @@ const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 
+// CLOUDINARY INTEGRATION LIBRARIES
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+
 const app = express();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
@@ -25,37 +29,30 @@ app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Static assets & Uploads directory setup
+// Static assets setup
 app.use(express.static(path.join(__dirname, 'public')));
-const uploadDir = path.join(__dirname, 'public', 'uploads');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
 
-// Configure Multer Storage Engine
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, 'meal-' + uniqueSuffix + ext);
+// =========================================================================
+// CLOUDINARY & MULTER CONFIGURATION (PERMANENT STORAGE)
+// =========================================================================
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'ogitech-express-menu',
+        allowed_formats: ['jpeg', 'jpg', 'png', 'gif', 'webp'],
+        transformation: [{ width: 800, height: 600, crop: 'limit' }]
     }
 });
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-    fileFilter: (req, file, cb) => {
-        const allowedTypes = /jpeg|jpg|png|gif|webp/;
-        const mimeType = allowedTypes.test(file.mimetype);
-        const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-        if (mimeType && extName) {
-            return cb(null, true);
-        }
-        cb(new Error("Only image files (jpg, png, gif, webp) are allowed!"));
-    }
+    limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
 
 app.use(session({
@@ -425,7 +422,6 @@ app.get('/payment/callback', async (req, res) => {
 // STAFF PORTAL
 // =========================================================================
 
-// ROUTE MATCHES views/login.ejs WITH SAFE ERROR CALLBACK
 app.get('/ogitech-kitchen-gate-2026', (req, res) => { 
     res.render('login', { error: req.query.error || null }, (err, html) => {
         if (err) {
@@ -555,14 +551,15 @@ app.get('/admin', isAdmin, async (req, res) => {
     } catch (err) { res.status(500).send("Admin Core View Render Error"); }
 });
 
-// ADD MEAL WITH MULTER FILE UPLOAD
+// ADD MEAL WITH CLOUDINARY FILE UPLOAD
 app.post('/admin/add-food', isAdmin, upload.single('image'), async (req, res) => {
     try {
         const { name, price, processingTime, category, imageUrl, description } = req.body;
         
         let finalImagePath = imageUrl || '';
         if (req.file) {
-            finalImagePath = '/uploads/' + req.file.filename;
+            // req.file.path contains the permanent HTTPS Cloudinary URL
+            finalImagePath = req.file.path;
         }
 
         await Food.create({
@@ -573,7 +570,7 @@ app.post('/admin/add-food', isAdmin, upload.single('image'), async (req, res) =>
             imageUrl: finalImagePath,
             description: description || ''
         });
-        console.log(`[MENU] Added new dish: ${name}`);
+        console.log(`[MENU] Added new dish with Cloudinary image: ${name}`);
         res.redirect('/admin?tab=meals');
     } catch (err) {
         console.error("Error adding dish:", err);
@@ -581,7 +578,7 @@ app.post('/admin/add-food', isAdmin, upload.single('image'), async (req, res) =>
     }
 });
 
-// EDIT MEAL WITH MULTER FILE UPLOAD
+// EDIT MEAL WITH CLOUDINARY FILE UPLOAD
 app.post('/admin/edit-food', isAdmin, upload.single('image'), async (req, res) => {
     try {
         const { foodId, name, price, processingTime, category, imageUrl, description } = req.body;
@@ -590,7 +587,8 @@ app.post('/admin/edit-food', isAdmin, upload.single('image'), async (req, res) =
         let finalImagePath = existingFood ? existingFood.imageUrl : '';
 
         if (req.file) {
-            finalImagePath = '/uploads/' + req.file.filename;
+            // req.file.path contains the permanent HTTPS Cloudinary URL
+            finalImagePath = req.file.path;
         } else if (imageUrl && imageUrl.trim() !== '') {
             finalImagePath = imageUrl;
         }
@@ -603,7 +601,7 @@ app.post('/admin/edit-food', isAdmin, upload.single('image'), async (req, res) =
             imageUrl: finalImagePath,
             description: description || ''
         });
-        console.log(`[MENU] Updated dish ID: ${foodId}`);
+        console.log(`[MENU] Updated dish ID: ${foodId} with Cloudinary image`);
         res.redirect('/admin?tab=meals');
     } catch (err) {
         console.error("Error updating dish:", err);
