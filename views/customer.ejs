@@ -712,7 +712,6 @@
                 <thead>
                     <tr>
                         <th>Rank</th>
-                        <th>Customer Name</th>
                         <th>Meal Item</th>
                         <th>Est. Wait</th>
                         <th>Status</th>
@@ -723,8 +722,6 @@
                         <% jobs.forEach((job, index) => { %>
                             <tr class="<%= job.priority === 1 ? 'vip-row' : '' %>">
                                 <td><b>#<%= index + 1 %></b></td>
-                                <td>
-                                    <%= job.customerName %>
                                     <% if (job.priority === 1) { %> <span class="badge-vip">VIP</span> <% } %>
                                 </td>
                                 <td><%= job.quantity %>x <%= job.foodName %></td>
